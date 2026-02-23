@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap');
+
+:root {
+  --black: #080808;
+  --deep: #150b0b;
+  --maroon: #420420;
+  --crimson: #5c0a2e;
+  --blush: #FFADED;
+  --blush-dim: rgba(255,173,237,0.18);
+  --blush-glow: rgba(255,173,237,0.08);
+  --cream: #fff0fb;
+  --white: #fdf8fc;
+  --muted: #9a7a8e;
+  --border: rgba(255,173,237,0.15);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+.font-display { font-family: 'Cormorant Garamond', serif; }
+.font-headline { font-family: 'Bebas Neue', sans-serif; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--maroon); }
