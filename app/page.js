@@ -189,6 +189,7 @@ export default function Home() {
         </Link>
         <div style={{ display:'flex', gap:36 }}>
           {[
+            { label: 'Drop', href: '/drop' },
             { label: 'Shop', href: '#shop' },
             { label: 'Lookbook', href: '/lookbook' },
             { label: 'Our Story', href: '#story' },
@@ -236,6 +237,14 @@ export default function Home() {
           ))}
         </div>
       </div>
+
+      {/* DROP BANNER */}
+      <Link href="/drop" style={{ display:'block', background:'#FFADED', color:'#420420', padding:'16px 24px', textDecoration:'none' }}>
+        <div style={{ maxWidth:1300, margin:'0 auto', display:'flex', alignItems:'center', justifyContent:'center', gap:16, flexWrap:'wrap', textAlign:'center' }}>
+          <span style={{ fontFamily:'Bebas Neue,sans-serif', fontSize:'clamp(20px,3vw,30px)', letterSpacing:'0.06em' }}>THE FADED CAPSULE IS LIVE</span>
+          <span style={{ fontSize:11, letterSpacing:'0.16em', textTransform:'uppercase', fontWeight:600 }}>Code FADED15 · 15% off →</span>
+        </div>
+      </Link>
 
       {/* BRAND MARKS */}
       <section style={{ padding:'72px 80px', background:'#0a0808', display:'flex', alignItems:'center', justifyContent:'center', gap:80, borderBottom:'1px solid rgba(255,173,237,0.1)', flexWrap:'wrap' }}>
