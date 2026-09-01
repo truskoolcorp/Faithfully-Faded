@@ -20,8 +20,8 @@ export default function Lookbook() {
       <div style={{ padding:'60px 80px', display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:3 }}>
         {PRODUCTS.map(p => (
           <Link key={p.id} href={`/shop/${p.id}`} style={{ background:'#0f0b0e', display:'block' }}>
-            <div style={{ aspectRatio:'3/4', background:'linear-gradient(160deg,rgba(66,4,32,0.2),#0d0808)', display:'flex', alignItems:'center', justifyContent:'center', position:'relative' }}>
-              <span style={{ fontSize:56, opacity:0.25 }}>{p.emoji}</span>
+            <div style={{ aspectRatio:'3/4', background:'linear-gradient(160deg,rgba(66,4,32,0.2),#0d0808)', display:'flex', alignItems:'center', justifyContent:'center', position:'relative', overflow:'hidden' }}>
+              {p.image ? <img src={p.image} alt={p.name} style={{ width:'100%', height:'100%', objectFit:'cover' }} /> : <span style={{ fontSize:56, opacity:0.25 }}>{p.emoji}</span>}
               {p.badge && <div style={{ position:'absolute', top:16, left:16, background:'#150b0b', color:'#FFADED', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', padding:'5px 12px' }}>{p.badge}</div>}
             </div>
             <div style={{ padding:'20px 24px', borderTop:'1px solid rgba(255,173,237,0.1)', display:'flex', justifyContent:'space-between' }}>
