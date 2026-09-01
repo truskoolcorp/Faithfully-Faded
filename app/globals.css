@@ -33,31 +33,32 @@ button { font-family: var(--font-body); }
 .legal-content h2 { font-family: var(--font-display); font-size: 24px; font-weight: 400; color: var(--ff-pink); margin: 40px 0 16px; }
 .legal-content p { color: var(--ff-muted); font-size: 14px; line-height: 1.8; margin-bottom: 16px; }
 
-/* Product art fallback for cards that still use the legacy emoji renderer. */
-a[href='/shop/hooded-baseball-jersey-dress'] > div:first-child {
+/* Homepage-only product art for legacy card renderer. Keep these scoped to #shop
+   so Lookbook, Drop and product pages can render their own clean catalog art. */
+#shop a[href='/shop/hooded-baseball-jersey-dress'] > div:first-child {
   background-image: linear-gradient(to top, rgba(8,8,8,.18), rgba(8,8,8,.02)), url('/images/products/hooded-baseball-jersey-dress.png') !important;
   background-size: cover !important;
   background-position: center top !important;
 }
-a[href='/shop/butterfly-varsity-tee'] > div:first-child {
+#shop a[href='/shop/butterfly-varsity-tee'] > div:first-child {
   background-image: linear-gradient(to top, rgba(8,8,8,.15), rgba(8,8,8,.02)), url('/images/products/butterfly-varsity-tee.png') !important;
   background-size: cover !important;
   background-position: center !important;
 }
-a[href='/shop/ff-dad-cap'] > div:first-child {
+#shop a[href='/shop/ff-dad-cap'] > div:first-child {
   background-image: linear-gradient(to top, rgba(8,8,8,.15), rgba(8,8,8,.02)), url('/images/products/ff-butterfly-dad-cap.png') !important;
   background-size: cover !important;
   background-position: center !important;
 }
-a[href='/shop/verde-pullover'] > div:first-child {
+#shop a[href='/shop/verde-pullover'] > div:first-child {
   background-image: linear-gradient(to top, rgba(8,8,8,.15), rgba(8,8,8,.02)), url('/images/products/verde-edition-pullover.png') !important;
   background-size: cover !important;
   background-position: center !important;
 }
-a[href='/shop/hooded-baseball-jersey-dress'] > div:first-child > span,
-a[href='/shop/butterfly-varsity-tee'] > div:first-child > span,
-a[href='/shop/ff-dad-cap'] > div:first-child > span,
-a[href='/shop/verde-pullover'] > div:first-child > span { display: none !important; }
+#shop a[href='/shop/hooded-baseball-jersey-dress'] > div:first-child > span,
+#shop a[href='/shop/butterfly-varsity-tee'] > div:first-child > span,
+#shop a[href='/shop/ff-dad-cap'] > div:first-child > span,
+#shop a[href='/shop/verde-pullover'] > div:first-child > span { display: none !important; }
 
 /* Ahnika portrait card: use the uploaded character image but keep the existing scan-line animation. */
 #ahnika > div:nth-child(2) > div:first-child {
