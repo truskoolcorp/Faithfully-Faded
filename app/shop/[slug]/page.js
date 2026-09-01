@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { PRODUCTS, getProduct, getRelatedProducts } from '@/lib/products'
+import { getProduct, getRelatedProducts } from '@/lib/products'
 
 export default function ProductPage() {
   const { slug } = useParams()
@@ -29,7 +29,6 @@ export default function ProductPage() {
 
   return (
     <div style={{ paddingTop:100 }}>
-      {/* NAV */}
       <nav style={{ position:'fixed', top:0, left:0, right:0, zIndex:100, padding:'24px 56px', display:'flex', alignItems:'center', justifyContent:'space-between', background:'rgba(8,8,8,0.95)' }}>
         <Link href="/" style={{ display:'flex', alignItems:'center', gap:14 }}>
           <img src="/images/butterfly-maroon.png" alt="FF" style={{ width:36, height:36, objectFit:'contain', filter:'drop-shadow(0 0 8px rgba(255,173,237,0.4))' }} />
@@ -44,19 +43,23 @@ export default function ProductPage() {
         </div>
       </nav>
 
-      {/* BREADCRUMB */}
       <div style={{ padding:'0 80px', marginBottom:40 }}>
         <div style={{ fontSize:11, color:'#9a7a8e', display:'flex', gap:8 }}>
           <Link href="/" style={{ color:'#9a7a8e' }}>Home</Link> / <Link href="/#shop" style={{ color:'#9a7a8e' }}>Shop</Link> / <span style={{ color:'#FFADED' }}>{product.name}</span>
         </div>
       </div>
 
-      {/* PRODUCT */}
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:80, padding:'0 80px 80px' }}>
-        <div style={{ aspectRatio:'3/4', background:'linear-gradient(160deg,rgba(66,4,32,0.2),#0d0808)', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:16, border:'1px solid rgba(255,173,237,0.1)', position:'relative' }}>
-          <span style={{ fontSize:100, opacity:0.3 }}>{product.emoji}</span>
+        <div style={{ aspectRatio:'3/4', background:'linear-gradient(160deg,rgba(66,4,32,0.2),#0d0808)', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:16, border:'1px solid rgba(255,173,237,0.1)', position:'relative', overflow:'hidden' }}>
+          {product.image ? (
+            <img src={product.image} alt={product.name} style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center' }} />
+          ) : (
+            <>
+              <span style={{ fontSize:100, opacity:0.3 }}>{product.emoji}</span>
+              <div style={{ position:'absolute', bottom:20, left:20, fontSize:10, color:'#9a7a8e', letterSpacing:'0.2em' }}>Product image coming soon</div>
+            </>
+          )}
           {product.badge && <div style={{ position:'absolute', top:20, left:20, background: product.badge === 'Bestseller' ? '#FFADED' : '#150b0b', color: product.badge === 'Bestseller' ? '#420420' : '#FFADED', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', padding:'6px 14px' }}>{product.badge}</div>}
-          <div style={{ position:'absolute', bottom:20, left:20, fontSize:10, color:'#9a7a8e', letterSpacing:'0.2em' }}>Product image coming soon</div>
         </div>
 
         <div>
@@ -107,14 +110,13 @@ export default function ProductPage() {
         </div>
       </div>
 
-      {/* RELATED */}
       <section style={{ padding:'80px', background:'#150b0b', borderTop:'1px solid rgba(255,173,237,0.1)' }}>
         <h3 style={{ fontFamily:'Cormorant Garamond,serif', fontSize:28, fontWeight:300, marginBottom:40 }}>You May Also Like</h3>
         <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:3 }}>
           {related.map(p => (
             <Link key={p.id} href={`/shop/${p.id}`} style={{ background:'#0f0b0e', display:'block' }}>
-              <div style={{ aspectRatio:'3/4', background:'linear-gradient(160deg,rgba(66,4,32,0.2),#0d0808)', display:'flex', alignItems:'center', justifyContent:'center' }}>
-                <span style={{ fontSize:48, opacity:0.25 }}>{p.emoji}</span>
+              <div style={{ aspectRatio:'3/4', background:'linear-gradient(160deg,rgba(66,4,32,0.2),#0d0808)', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
+                {p.image ? <img src={p.image} alt={p.name} style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center' }} /> : <span style={{ fontSize:48, opacity:0.25 }}>{p.emoji}</span>}
               </div>
               <div style={{ padding:'20px 24px', borderTop:'1px solid rgba(255,173,237,0.1)', display:'flex', justifyContent:'space-between' }}>
                 <div>
