@@ -50,7 +50,7 @@ export default function Drop() {
           {capsule.map(p => (
             <Link key={p.id} href={`/shop/${p.id}`} style={{ position: 'relative', background: '#0f0b0e', overflow: 'hidden', display: 'block', textDecoration: 'none', color: '#fdf8fc' }}>
               <div style={{ aspectRatio: '3/4', background: 'linear-gradient(160deg, rgba(66,4,32,0.25) 0%, #0d0808 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow:'hidden' }}>
-                {p.image ? <img src={p.image} alt={p.name} style={{ width:'100%', height:'100%', objectFit:'cover' }} /> : <span style={{ fontSize: 60, opacity: 0.25 }}>{p.emoji}</span>}
+                {p.image ? <img src={p.image} alt={p.name} style={{ width:'100%', height:'100%', objectFit:p.id === 'hooded-baseball-jersey-dress' ? 'contain' : 'cover', objectPosition:'center', padding:p.id === 'hooded-baseball-jersey-dress' ? '22px' : 0 }} /> : <span style={{ fontSize: 60, opacity: 0.25 }}>{p.emoji}</span>}
                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(8,8,8,0.9) 0%, transparent 55%)' }} />
                 <div style={{ position: 'absolute', top: 16, left: 16, background: '#FFADED', color: '#420420', fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', padding: '5px 12px', fontWeight: 500 }}>Capsule</div>
               </div>
