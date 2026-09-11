@@ -13,11 +13,17 @@ function syncProductArt() {
     const art = card.firstElementChild
     if (!product?.image || !art) return
 
-    // Keep the existing badges, overlays and add-to-cart controls intact,
-    // but render every product from a normal static asset path. This avoids
-    // duplicate/layered images and the corruption seen with large data URIs.
+    // Keep the product cards visually consistent and prevent CSS Grid from
+    // stretching shorter cards into large empty panels.
+    card.style.alignSelf = 'start'
+    card.style.height = 'auto'
+
+    // Use the intended homepage art when one is defined (for example the
+    // modeled jersey hero), otherwise fall back to the catalog product image.
+    const image = product.featuredImage || product.image
+
     art.querySelectorAll(':scope > img[data-product-art="true"]').forEach(img => img.remove())
-    art.style.backgroundImage = `url("${product.image}")`
+    art.style.backgroundImage = `url("${image}")`
     art.style.backgroundSize = 'contain'
     art.style.backgroundRepeat = 'no-repeat'
     art.style.backgroundPosition = 'center'
