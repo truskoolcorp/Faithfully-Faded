@@ -9,8 +9,7 @@ export default function ProductPage() {
   const product = getProduct(slug)
   const related = getRelatedProducts(slug, 3)
   const [selectedColor, setSelectedColor] = useState(0)
-  const [selectedSize, setSelectedSize] = useState(null)
-  const [addedToCart, setAddedToCart] = useState(false)
+  const [selectedSize, setSelectedSize] = useState(product && product.sizes.length === 1 ? product.sizes[0] : null)
 
   if (!product) {
     return (
@@ -20,11 +19,6 @@ export default function ProductPage() {
         <Link href="/#shop" style={{ color:'#FFADED', fontSize:13, letterSpacing:'0.2em', textTransform:'uppercase' }}>← Back to Shop</Link>
       </div>
     )
-  }
-
-  const handleAdd = () => {
-    setAddedToCart(true)
-    setTimeout(() => setAddedToCart(false), 2000)
   }
 
   return (
@@ -93,11 +87,29 @@ export default function ProductPage() {
             <Link href="/size-guide" style={{ fontSize:11, color:'#FFADED', marginTop:12, display:'inline-block', letterSpacing:'0.15em' }}>Size Guide →</Link>
           </div>
 
-          <button onClick={handleAdd} style={{
-            width:'100%', padding:20, fontSize:12, letterSpacing:'0.2em', textTransform:'uppercase', cursor:'pointer', border:'none', transition:'all 0.3s',
-            background: addedToCart ? '#2a6a2a' : '#420420',
-            color:'#fdf8fc',
-          }}>{addedToCart ? '✓ Added to Cart' : 'Add to Cart'}</button>
+          {/* Snipcart picks up clicks on .snipcart-add-item and validates the price against this page */}
+          <button
+            type="button"
+            className="snipcart-add-item"
+            disabled={!selectedSize}
+            data-item-id={product.id}
+            data-item-name={product.name}
+            data-item-price={product.price}
+            data-item-url={`/shop/${product.id}`}
+            data-item-description={product.description}
+            data-item-image={product.image ? `https://www.faithfully-faded.com${product.image}` : undefined}
+            data-item-custom1-name="Color"
+            data-item-custom1-options={product.colors.map(c => c.name).join('|')}
+            data-item-custom1-value={product.colors[selectedColor].name}
+            data-item-custom2-name="Size"
+            data-item-custom2-options={product.sizes.join('|')}
+            data-item-custom2-value={selectedSize || product.sizes[0]}
+            style={{
+              width:'100%', padding:20, fontSize:12, letterSpacing:'0.2em', textTransform:'uppercase', border:'none', transition:'all 0.3s',
+              cursor: selectedSize ? 'pointer' : 'not-allowed',
+              background: selectedSize ? '#420420' : 'rgba(66,4,32,0.4)',
+              color:'#fdf8fc',
+            }}>{selectedSize ? 'Add to Cart' : 'Select a Size'}</button>
 
           <div style={{ marginTop:48, borderTop:'1px solid rgba(255,173,237,0.1)', paddingTop:32 }}>
             <div style={{ fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase', color:'#FFADED', marginBottom:16 }}>Details</div>

@@ -1,4 +1,5 @@
 import './globals.css'
+import CartButton from './CartButton'
 
 export const metadata = {
   title: 'Faithfully Faded™ — Distinctive Apparel',
@@ -20,7 +21,23 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <head>
+        <link rel="preconnect" href="https://app.snipcart.com" />
+        <link rel="preconnect" href="https://cdn.snipcart.com" />
+        <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.7.5/default/snipcart.css" />
+      </head>
+      <body>
+        {children}
+        <CartButton />
+        <div
+          hidden
+          id="snipcart"
+          data-api-key="NTU5OGE4OTgtNmEyOS00NWI0LWIzMTUtMjBkMjQ2NDFjN2MxNjM5MTMzMjIwODc1MTU2Njcz"
+          data-currency="usd"
+          data-config-modal-style="side"
+        />
+        <script async src="https://cdn.snipcart.com/themes/v3.7.5/default/snipcart.js" />
+      </body>
     </html>
   )
 }

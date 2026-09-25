@@ -88,3 +88,7 @@ button { font-family: var(--font-body); }
 @keyframes shimmer { from { background-position: 0% center } to { background-position: 200% center } }
 @keyframes heroIn { from { opacity:0; transform: translateY(40px) } to { opacity:1; transform: none } }
 @keyframes fadeUp { from { opacity:0; transform: translateY(16px) } to { opacity:1; transform: none } }
+
+/* Snipcart cart/checkout always sits above the fixed page navs and the bag button */
+#snipcart { position: relative; z-index: 2147483000; }
+.snipcart-modal__container, .snipcart-modal { z-index: 2147483000 !important; }
