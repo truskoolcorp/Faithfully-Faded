@@ -109,7 +109,7 @@ export default function Home() {
             <div key={i} style={{ display:'flex', gap:16, padding:'16px 0', borderBottom:'1px solid rgba(255,173,237,0.08)' }}>
               <div style={{ width:64, height:80, background:'linear-gradient(160deg,rgba(66,4,32,0.3),#0d0808)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:24, flexShrink:0 }}>{item.emoji}</div>
               <div style={{ flex:1 }}>
-                <div style={{ fontSize:14, marginBottom:4 }}>{item.name}</div>
+                <div style={{ fontSize:14, marginBottom:4 }}>{item.name}</div>\n                {item.fulfillmentStatus === 'pre-order' && <div style={{ fontSize:10, color:'#FFADED', letterSpacing:'0.12em', textTransform:'uppercase', marginBottom:6 }}>Pre-Order · Not ready to ship</div>}
                 <div style={{ fontSize:11, color:'#9a7a8e', marginBottom:4 }}>{item.selectedColor && `${item.selectedColor} · `}{item.selectedSize && `Size ${item.selectedSize} · `}Qty {item.qty}</div>
                 <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
                   <span style={{ fontFamily:'Cormorant Garamond,serif', fontSize:18, color:'#FFADED' }}>${item.price * item.qty}</span>
@@ -123,7 +123,7 @@ export default function Home() {
           <div style={{ display:'flex', justifyContent:'space-between', marginBottom:20, fontFamily:'Cormorant Garamond,serif', fontSize:20 }}>
             <span>Total</span><span style={{ color:'#FFADED' }}>${cart.total.toFixed(2)}</span>
           </div>
-          <button style={{ width:'100%', background:'#420420', color:'#fdf8fc', border:'none', padding:18, fontSize:12, letterSpacing:'0.2em', textTransform:'uppercase', cursor:'pointer', transition:'background 0.3s' }}>Proceed to Checkout</button>
+          {cart.items.some(item => item.fulfillmentStatus === 'pre-order') && <p style={{ fontSize:10, lineHeight:1.6, color:'#FFADED', marginBottom:14, letterSpacing:'0.08em' }}>Pre-order items are not ready to ship. Production and delivery timing is not guaranteed until fulfillment is confirmed.</p>}\n          <button style={{ width:'100%', background:'#420420', color:'#fdf8fc', border:'none', padding:18, fontSize:12, letterSpacing:'0.2em', textTransform:'uppercase', cursor:'pointer', transition:'background 0.3s' }}>Proceed to Checkout</button>
         </div>
       </div>
 
