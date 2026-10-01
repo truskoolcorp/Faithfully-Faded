@@ -109,7 +109,8 @@ export default function Home() {
             <div key={i} style={{ display:'flex', gap:16, padding:'16px 0', borderBottom:'1px solid rgba(255,173,237,0.08)' }}>
               <div style={{ width:64, height:80, background:'linear-gradient(160deg,rgba(66,4,32,0.3),#0d0808)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:24, flexShrink:0 }}>{item.emoji}</div>
               <div style={{ flex:1 }}>
-                <div style={{ fontSize:14, marginBottom:4 }}>{item.name}</div>\n                {item.fulfillmentStatus === 'pre-order' && <div style={{ fontSize:10, color:'#FFADED', letterSpacing:'0.12em', textTransform:'uppercase', marginBottom:6 }}>Pre-Order · Not ready to ship</div>}
+                <div style={{ fontSize:14, marginBottom:4 }}>{item.name}</div>
+                {item.fulfillmentStatus === 'pre-order' && <div style={{ fontSize:10, color:'#FFADED', letterSpacing:'0.12em', textTransform:'uppercase', marginBottom:6 }}>Pre-Order · Not ready to ship</div>}
                 <div style={{ fontSize:11, color:'#9a7a8e', marginBottom:4 }}>{item.selectedColor && `${item.selectedColor} · `}{item.selectedSize && `Size ${item.selectedSize} · `}Qty {item.qty}</div>
                 <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
                   <span style={{ fontFamily:'Cormorant Garamond,serif', fontSize:18, color:'#FFADED' }}>${item.price * item.qty}</span>
@@ -123,7 +124,8 @@ export default function Home() {
           <div style={{ display:'flex', justifyContent:'space-between', marginBottom:20, fontFamily:'Cormorant Garamond,serif', fontSize:20 }}>
             <span>Total</span><span style={{ color:'#FFADED' }}>${cart.total.toFixed(2)}</span>
           </div>
-          {cart.items.some(item => item.fulfillmentStatus === 'pre-order') && <p style={{ fontSize:10, lineHeight:1.6, color:'#FFADED', marginBottom:14, letterSpacing:'0.08em' }}>Pre-order items are not ready to ship. Production and delivery timing is not guaranteed until fulfillment is confirmed.</p>}\n          <button style={{ width:'100%', background:'#420420', color:'#fdf8fc', border:'none', padding:18, fontSize:12, letterSpacing:'0.2em', textTransform:'uppercase', cursor:'pointer', transition:'background 0.3s' }}>Proceed to Checkout</button>
+          {cart.items.some(item => item.fulfillmentStatus === 'pre-order') && <p style={{ fontSize:10, lineHeight:1.6, color:'#FFADED', marginBottom:14, letterSpacing:'0.08em' }}>Pre-order items are not ready to ship. Production and delivery timing is not guaranteed until fulfillment is confirmed.</p>}
+          <Link href="/shop" onClick={() => setDrawerOpen(false)} style={{ display:'block', width:'100%', boxSizing:'border-box', background:'#420420', color:'#fdf8fc', border:'none', padding:18, fontSize:12, letterSpacing:'0.2em', textTransform:'uppercase', textAlign:'center', textDecoration:'none' }}>Review Items in Shop</Link>
         </div>
       </div>
 
@@ -289,9 +291,7 @@ export default function Home() {
                 {p.badge && (
                   <div style={{ position:'absolute', top:16, left:16, background: p.badge === 'Bestseller' ? '#FFADED' : '#150b0b', color: p.badge === 'Bestseller' ? '#420420' : '#FFADED', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', padding:'5px 12px', fontWeight:500 }}>{p.badge}</div>
                 )}
-                <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); cart.add({ ...p, selectedColor: p.colors[0]?.name, selectedSize: p.sizes[1] || p.sizes[0] }); setDrawerOpen(true) }}
-                  style={{ position:'absolute', top:16, right:16, background:'#420420', color:'#fdf8fc', border:'none', width:40, height:40, display:'flex', alignItems:'center', justifyContent:'center', fontSize:20, cursor:'pointer', borderRadius:4 }}
-                >+</button>
+                <span style={{ position:'absolute', top:16, right:16, background:'#420420', color:'#fdf8fc', border:'none', padding:'10px 12px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:9, letterSpacing:'0.12em', textTransform:'uppercase', borderRadius:4 }}>View</span>
               </div>
               <div style={{ padding:'20px 24px 28px', borderTop:'1px solid rgba(255,173,237,0.1)', display:'flex', justifyContent:'space-between', alignItems:'flex-end' }}>
                 <div>
@@ -313,9 +313,7 @@ export default function Home() {
                 <span style={{ fontSize:48, opacity:0.25 }}>{p.emoji}</span>
                 <div style={{ position:'absolute', inset:0, background:'linear-gradient(to top,rgba(8,8,8,0.9) 0%,transparent 50%)' }} />
                 {p.badge && <div style={{ position:'absolute', top:16, left:16, background:'#150b0b', color:'#FFADED', fontSize:9, letterSpacing:'0.2em', textTransform:'uppercase', padding:'5px 12px', fontWeight:500 }}>{p.badge}</div>}
-                <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); cart.add({ ...p, selectedColor: p.colors[0]?.name, selectedSize: p.sizes[1] || p.sizes[0] }); setDrawerOpen(true) }}
-                  style={{ position:'absolute', top:16, right:16, background:'#420420', color:'#fdf8fc', border:'none', width:40, height:40, display:'flex', alignItems:'center', justifyContent:'center', fontSize:20, cursor:'pointer', borderRadius:4 }}
-                >+</button>
+                <span style={{ position:'absolute', top:16, right:16, background:'#420420', color:'#fdf8fc', border:'none', padding:'10px 12px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:9, letterSpacing:'0.12em', textTransform:'uppercase', borderRadius:4 }}>View</span>
               </div>
               <div style={{ padding:'20px 24px 28px', borderTop:'1px solid rgba(255,173,237,0.1)', display:'flex', justifyContent:'space-between', alignItems:'flex-end' }}>
                 <div>
