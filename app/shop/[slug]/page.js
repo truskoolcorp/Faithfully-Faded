@@ -60,7 +60,7 @@ export default function ProductPage() {
           <div style={{ fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase', color:'#FFADED', marginBottom:8 }}>{product.category}</div>
           <h1 style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'clamp(32px,4vw,48px)', fontWeight:300, marginBottom:16 }}>{product.name}</h1>
           <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:32, color:'#FFADED', marginBottom:32 }}>${product.price}</div>
-          <p style={{ color:'#9a7a8e', fontSize:14, lineHeight:1.8, marginBottom:40 }}>{product.description}</p>
+          <p style={{ color:'#9a7a8e', fontSize:14, lineHeight:1.8, marginBottom:16 }}>{product.description}</p>\n          {product.fulfillmentNotice && <div style={{ border:'1px solid rgba(255,173,237,0.25)', padding:'14px 16px', marginBottom:32, color:'#fdf8fc', fontSize:13, lineHeight:1.6 }}><strong style={{ color:'#FFADED' }}>{product.fulfillmentStatus === 'pre-order' ? 'PRE-ORDER: ' : 'IN STOCK: '}</strong>{product.fulfillmentNotice}</div>}
 
           <div style={{ marginBottom:32 }}>
             <div style={{ fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase', color:'#9a7a8e', marginBottom:12 }}>Color — {product.colors[selectedColor].name}</div>
@@ -96,7 +96,7 @@ export default function ProductPage() {
             data-item-name={product.name}
             data-item-price={product.price}
             data-item-url={`/shop/${product.id}`}
-            data-item-description={product.description}
+            data-item-description={product.fulfillmentStatus === 'pre-order' ? `PRE-ORDER — not ready to ship; delivery timing is not guaranteed. ${product.description}` : product.description}
             data-item-image={product.image ? `https://www.faithfully-faded.com${product.image}` : undefined}
             data-item-custom1-name="Color"
             data-item-custom1-options={product.colors.map(c => c.name).join('|')}
@@ -109,7 +109,7 @@ export default function ProductPage() {
               cursor: selectedSize ? 'pointer' : 'not-allowed',
               background: selectedSize ? '#420420' : 'rgba(66,4,32,0.4)',
               color:'#fdf8fc',
-            }}>{selectedSize ? 'Add to Cart' : 'Select a Size'}</button>
+            }}>{selectedSize ? (product.fulfillmentStatus === 'pre-order' ? 'Pre-Order' : 'Add to Cart') : 'Select a Size'}</button>
 
           <div style={{ marginTop:48, borderTop:'1px solid rgba(255,173,237,0.1)', paddingTop:32 }}>
             <div style={{ fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase', color:'#FFADED', marginBottom:16 }}>Details</div>
