@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { getProduct, getRelatedProducts } from '@/lib/products'
@@ -10,6 +10,18 @@ export default function ProductPage() {
   const related = getRelatedProducts(slug, 3)
   const [selectedColor, setSelectedColor] = useState(0)
   const [selectedSize, setSelectedSize] = useState(product && product.sizes.length === 1 ? product.sizes[0] : null)
+  const [ownedSizes, setOwnedSizes] = useState(null)
+  const isOwned = product?.id === 'hooded-baseball-jersey-dress'
+
+  useEffect(() => {
+    if (!isOwned) return
+    let active = true
+    fetch('/api/inventory/owned', { cache:'no-store' }).then(r => r.ok ? r.json() : Promise.reject()).then(data => { if (active) setOwnedSizes(data.sizes || {}) }).catch(() => { if (active) setOwnedSizes({}) })
+    return () => { active = false }
+  }, [isOwned])
+
+  const sizeAvailable = s => !isOwned || Number(ownedSizes?.[s] || 0) > 0
+  const ownedReady = !isOwned || ownedSizes !== null
 
   if (!product) {
     return (
@@ -75,12 +87,12 @@ export default function ProductPage() {
             <div style={{ fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase', color:'#9a7a8e', marginBottom:12 }}>Size</div>
             <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
               {product.sizes.map(s => (
-                <button key={s} onClick={() => setSelectedSize(s)} style={{
+                <button key={s} disabled={!ownedReady || !sizeAvailable(s)} onClick={() => sizeAvailable(s) && setSelectedSize(s)} style={{
                   padding:'12px 20px', fontSize:12, letterSpacing:'0.1em',
                   background: selectedSize === s ? '#420420' : 'transparent',
                   color: selectedSize === s ? '#fdf8fc' : '#9a7a8e',
                   border: selectedSize === s ? '1px solid #420420' : '1px solid rgba(255,173,237,0.15)',
-                  cursor:'pointer', transition:'all 0.3s',
+                  cursor: ownedReady && sizeAvailable(s) ? 'pointer' : 'not-allowed', opacity: ownedReady && sizeAvailable(s) ? 1 : 0.35, transition:'all 0.3s',
                 }}>{s}</button>
               ))}
             </div>
@@ -91,7 +103,7 @@ export default function ProductPage() {
           <button
             type="button"
             className="snipcart-add-item"
-            disabled={!selectedSize}
+            disabled={!selectedSize || !ownedReady || !sizeAvailable(selectedSize)}
             data-item-id={product.id}
             data-item-name={product.name}
             data-item-price={product.price}
@@ -106,8 +118,8 @@ export default function ProductPage() {
             data-item-custom2-value={selectedSize || product.sizes[0]}
             style={{
               width:'100%', padding:20, fontSize:12, letterSpacing:'0.2em', textTransform:'uppercase', border:'none', transition:'all 0.3s',
-              cursor: selectedSize ? 'pointer' : 'not-allowed',
-              background: selectedSize ? '#420420' : 'rgba(66,4,32,0.4)',
+              cursor: selectedSize && ownedReady && sizeAvailable(selectedSize) ? 'pointer' : 'not-allowed',
+              background: selectedSize && ownedReady && sizeAvailable(selectedSize) ? '#420420' : 'rgba(66,4,32,0.4)',
               color:'#fdf8fc',
             }}>{selectedSize ? (product.fulfillmentStatus === 'pre-order' ? 'Pre-Order' : 'Add to Cart') : 'Select a Size'}</button>
 
