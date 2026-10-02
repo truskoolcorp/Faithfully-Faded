@@ -32,6 +32,7 @@ export async function POST(req) {
     owned.push({sku,quantity:Math.max(1,Number(item.quantity)||1),itemId:String(item.id)})
   }
   if(!owned.length) return NextResponse.json({received:true,ownedStock:false})
+  if(isTest) return NextResponse.json({received:true,ownedStock:true,inventoryMode:'dry-run',skus:owned.map(x=>x.sku)})
   try {
     for(const line of owned) await decrementOwnedStock({eventId:`${externalId}:${line.sku}`,externalOrderId:externalId,sku:line.sku,quantity:line.quantity,payload})
     return NextResponse.json({received:true,ownedStock:true,skus:owned.map(x=>x.sku)})
