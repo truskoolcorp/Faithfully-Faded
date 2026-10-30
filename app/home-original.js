@@ -207,9 +207,9 @@ export default function Home() {
       {/* HERO */}
       <section style={{ minHeight:'100vh', position:'relative', display:'flex', alignItems:'flex-end', overflow:'hidden' }}>
         <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse 80% 100% at 65% 50%, #1a0415 0%, #0d0210 40%, #080808 100%)' }} />
-        <div style={{ position:'absolute', right:0, top:0, bottom:0, width:'52%', overflow:'hidden' }}>
-          <img src="/images/billboard.png" alt="Faithfully Faded" style={{ position:'absolute', width:'100%', height:'100%', objectFit:'cover', objectPosition:'center', opacity:0.85 }} />
-          <div style={{ position:'absolute', inset:0, background:'linear-gradient(to right, #080808 0%, transparent 35%), linear-gradient(to top, #080808 0%, transparent 35%)' }} />
+        <div style={{ position:'absolute', right:0, top:0, bottom:0, width:'52%', overflow:'hidden', pointerEvents:'none' }}>
+          <img src="/images/products/hooded-baseball-jersey-dress.png" alt="Faithfully Faded hooded baseball jersey dress" style={{ position:'absolute', width:'100%', height:'100%', objectFit:'contain', objectPosition:'center bottom', opacity:0.96 }} />
+          <div style={{ position:'absolute', inset:0, background:'linear-gradient(to right, #080808 0%, transparent 22%), linear-gradient(to top, #080808 0%, transparent 18%)' }} />
         </div>
         <div style={{ position:'relative', zIndex:2, padding:'0 80px 90px', width:'54%', animation:'heroIn 1.2s cubic-bezier(.16,1,.3,1) both' }}>
           <div style={{ fontSize:10, letterSpacing:'0.4em', textTransform:'uppercase', color:'#FFADED', marginBottom:20, display:'flex', alignItems:'center', gap:14 }}>

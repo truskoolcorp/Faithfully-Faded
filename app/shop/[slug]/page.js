@@ -9,6 +9,7 @@ export default function ProductPage() {
   const product = getProduct(slug)
   const related = getRelatedProducts(slug, 3)
   const [selectedColor, setSelectedColor] = useState(0)
+  const [variantImageFailed, setVariantImageFailed] = useState(false)
   const [selectedSize, setSelectedSize] = useState(product && product.sizes.length === 1 ? product.sizes[0] : null)
   const [ownedSizes, setOwnedSizes] = useState(null)
   const isOwned = product?.id === 'hooded-baseball-jersey-dress'
@@ -22,6 +23,8 @@ export default function ProductPage() {
 
   const sizeAvailable = s => !isOwned || Number(ownedSizes?.[s] || 0) > 0
   const ownedReady = !isOwned || ownedSizes !== null
+  const activeColor = product?.colors?.[selectedColor]
+  const activeImage = activeColor?.image && !variantImageFailed ? activeColor.image : product?.image
 
   if (!product) {
     return (
@@ -58,7 +61,7 @@ export default function ProductPage() {
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:80, padding:'0 80px 80px' }}>
         <div style={{ aspectRatio:'3/4', background:'linear-gradient(160deg,rgba(66,4,32,0.2),#0d0808)', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:16, border:'1px solid rgba(255,173,237,0.1)', position:'relative', overflow:'hidden' }}>
           {product.image ? (
-            <img src={product.image} alt={product.name} style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center' }} />
+            <img src={activeImage} alt={`${product.name} — ${activeColor?.name || 'product'}`} onError={() => setVariantImageFailed(true)} style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center' }} />
           ) : (
             <>
               <span style={{ fontSize:100, opacity:0.3 }}>{product.emoji}</span>
@@ -75,14 +78,14 @@ export default function ProductPage() {
           <p style={{ color:'#9a7a8e', fontSize:14, lineHeight:1.8, marginBottom:16 }}>{product.description}</p>
           {product.fulfillmentNotice && <div style={{ border:'1px solid rgba(255,173,237,0.25)', padding:'14px 16px', marginBottom:32, color:'#fdf8fc', fontSize:13, lineHeight:1.6 }}><strong style={{ color:'#FFADED' }}>{product.fulfillmentStatus === 'pre-order' ? 'PRE-ORDER: ' : 'IN STOCK: '}</strong>{product.fulfillmentNotice}</div>}
 
-          <div style={{ marginBottom:32 }}>
+          {product.colors.length > 0 && <div style={{ marginBottom:32 }}>
             <div style={{ fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase', color:'#9a7a8e', marginBottom:12 }}>{product.colors.length === 1 ? 'Available Color' : 'Color'} — {product.colors[selectedColor].name}</div>
             <div style={{ display:'flex', gap:10 }}>
               {product.colors.map((c, i) => (
-                <button key={c.hex} onClick={() => setSelectedColor(i)} style={{ width:36, height:36, borderRadius:'50%', background:c.hex, border: i === selectedColor ? '2px solid #FFADED' : '2px solid rgba(255,255,255,0.15)', cursor:'pointer', transition:'border-color 0.3s' }} />
+                <button key={c.hex} onClick={() => { setSelectedColor(i); setVariantImageFailed(false) }} aria-label={`View ${c.name} variant`} aria-pressed={i === selectedColor} style={{ width:36, height:36, borderRadius:'50%', background:c.hex, border: i === selectedColor ? '2px solid #FFADED' : '2px solid rgba(255,255,255,0.15)', cursor:'pointer', transition:'border-color 0.3s' }} />
               ))}
             </div>
-          </div>
+          </div>}
 
           <div style={{ marginBottom:40 }}>
             <div style={{ fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase', color:'#9a7a8e', marginBottom:12 }}>Size</div>
@@ -110,10 +113,10 @@ export default function ProductPage() {
             data-item-price={product.price}
             data-item-url={`/shop/${product.id}`}
             data-item-description={product.fulfillmentStatus === 'pre-order' ? `PRE-ORDER — not ready to ship; delivery timing is not guaranteed. ${product.description}` : product.description}
-            data-item-image={product.image ? `https://www.faithfully-faded.com${product.image}` : undefined}
-            data-item-custom1-name="Color"
-            data-item-custom1-options={product.colors.map(c => c.name).join('|')}
-            data-item-custom1-value={product.colors[selectedColor].name}
+            data-item-image={activeImage ? `https://www.faithfully-faded.com${activeImage}` : undefined}
+            data-item-custom1-name={product.colors.length ? "Color" : undefined}
+            data-item-custom1-options={product.colors.length ? product.colors.map(c => c.name).join('|') : undefined}
+            data-item-custom1-value={activeColor?.name}
             data-item-custom2-name="Size"
             data-item-custom2-options={product.sizes.join('|')}
             data-item-custom2-value={selectedSize || product.sizes[0]}
