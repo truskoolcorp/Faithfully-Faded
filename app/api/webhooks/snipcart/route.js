@@ -18,8 +18,8 @@ export async function POST(req) {
   try { payload=await req.json() } catch { return NextResponse.json({error:'Invalid JSON'},{status:400}) }
   const isTest=payload?.mode==='Test'
   try {
-    if(!isTest && !(await validToken(token))) return NextResponse.json({error:'Invalid token'},{status:401})
-  } catch(err) { return NextResponse.json({error:err?.message||'Webhook configuration error'},{status:500}) }
+    if(!(await validToken(token))) return NextResponse.json({error:'Invalid token'},{status:401})
+  } catch(err) { console.error('[snipcart] Webhook validation unavailable',err); return NextResponse.json({error:'Webhook validation unavailable'},{status:503}) }
   if(payload?.eventName!=='order.completed') return NextResponse.json({ignored:payload?.eventName||'unknown'})
   const order=payload?.content||{}
   const invoice=order.invoiceNumber||order.token
