@@ -72,10 +72,11 @@ export default function ProductPage() {
           <div style={{ fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase', color:'#FFADED', marginBottom:8 }}>{product.category}</div>
           <h1 style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'clamp(32px,4vw,48px)', fontWeight:300, marginBottom:16 }}>{product.name}</h1>
           <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:32, color:'#FFADED', marginBottom:32 }}>${product.price}</div>
-          <p style={{ color:'#9a7a8e', fontSize:14, lineHeight:1.8, marginBottom:16 }}>{product.description}</p>\n          {product.fulfillmentNotice && <div style={{ border:'1px solid rgba(255,173,237,0.25)', padding:'14px 16px', marginBottom:32, color:'#fdf8fc', fontSize:13, lineHeight:1.6 }}><strong style={{ color:'#FFADED' }}>{product.fulfillmentStatus === 'pre-order' ? 'PRE-ORDER: ' : 'IN STOCK: '}</strong>{product.fulfillmentNotice}</div>}
+          <p style={{ color:'#9a7a8e', fontSize:14, lineHeight:1.8, marginBottom:16 }}>{product.description}</p>
+          {product.fulfillmentNotice && <div style={{ border:'1px solid rgba(255,173,237,0.25)', padding:'14px 16px', marginBottom:32, color:'#fdf8fc', fontSize:13, lineHeight:1.6 }}><strong style={{ color:'#FFADED' }}>{product.fulfillmentStatus === 'pre-order' ? 'PRE-ORDER: ' : 'IN STOCK: '}</strong>{product.fulfillmentNotice}</div>}
 
           <div style={{ marginBottom:32 }}>
-            <div style={{ fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase', color:'#9a7a8e', marginBottom:12 }}>Color — {product.colors[selectedColor].name}</div>
+            <div style={{ fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase', color:'#9a7a8e', marginBottom:12 }}>{product.colors.length === 1 ? 'Available Color' : 'Color'} — {product.colors[selectedColor].name}</div>
             <div style={{ display:'flex', gap:10 }}>
               {product.colors.map((c, i) => (
                 <button key={c.hex} onClick={() => setSelectedColor(i)} style={{ width:36, height:36, borderRadius:'50%', background:c.hex, border: i === selectedColor ? '2px solid #FFADED' : '2px solid rgba(255,255,255,0.15)', cursor:'pointer', transition:'border-color 0.3s' }} />
