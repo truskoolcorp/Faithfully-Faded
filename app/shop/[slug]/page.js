@@ -111,7 +111,7 @@ export default function ProductPage() {
             data-item-id={product.id}
             data-item-name={product.name}
             data-item-price={product.price}
-            data-item-url={`/shop/${product.id}`}
+            data-item-url={`https://www.faithfully-faded.com/shop/${product.id}`}
             data-item-description={product.fulfillmentStatus === 'pre-order' ? `PRE-ORDER — not ready to ship; delivery timing is not guaranteed. ${product.description}` : product.description}
             data-item-image={activeImage ? `https://www.faithfully-faded.com${activeImage}` : undefined}
             data-item-custom1-name={product.colors.length ? "Color" : undefined}
