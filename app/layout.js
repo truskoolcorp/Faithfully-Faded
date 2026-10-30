@@ -19,6 +19,11 @@ export const metadata = {
 }
 
 export default function RootLayout({ children }) {
+  // Preview checkouts are disabled until a dedicated Snipcart TEST public key is set.
+  // Production retains the existing LIVE public key.
+  const snipcartKey = process.env.VERCEL_ENV === 'production'
+    ? 'NTU5OGE4OTgtNmEyOS00NWI0LWIzMTUtMjBkMjQ2NDFjN2MxNjM5MTMzMjIwODc1MTU2Njcz'
+    : process.env.NEXT_PUBLIC_SNIPCART_TEST_API_KEY || ''
   return (
     <html lang="en">
       <head>
@@ -29,14 +34,14 @@ export default function RootLayout({ children }) {
       <body>
         {children}
         <CartButton />
-        <div
+        {snipcartKey && <div
           hidden
           id="snipcart"
-          data-api-key="NTU5OGE4OTgtNmEyOS00NWI0LWIzMTUtMjBkMjQ2NDFjN2MxNjM5MTMzMjIwODc1MTU2Njcz"
+          data-api-key={snipcartKey}
           data-currency="usd"
           data-config-modal-style="side"
-        />
-        <script async src="https://cdn.snipcart.com/themes/v3.7.5/default/snipcart.js" />
+        />}
+        {snipcartKey && <script async src="https://cdn.snipcart.com/themes/v3.7.5/default/snipcart.js" />}
       </body>
     </html>
   )
