@@ -35,6 +35,7 @@ function useReveal() {
 export default function Home() {
   const cart = useCart()
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [chatOpen, setChatOpen] = useState(false)
   const [chatMessages, setChatMessages] = useState([
     { role: 'assistant', text: "Hey love! I'm Ahnika Merlot, your personal style curator at Faithfully Faded. What are you looking for today? 🦋" }
@@ -181,15 +182,16 @@ export default function Home() {
         </button>
       </div>
 
+      <style>{`@media(max-width:767px){.ff-nav{padding:14px 18px!important;gap:12px}.ff-brand-name{font-size:14px!important;white-space:nowrap}.ff-desktop-links{display:none!important}.ff-mobile-menu-button{display:block!important}.ff-hero{min-height:760px!important;min-height:100svh!important;align-items:flex-end!important}.ff-hero-image-panel{left:0!important;right:0!important;top:70px!important;bottom:0!important;width:100%!important}.ff-hero-photo{object-fit:cover!important;object-position:60% 30%!important}.ff-hero-shade{background:linear-gradient(to top,#080808 0%,rgba(8,8,8,.93) 20%,rgba(8,8,8,.25) 55%,transparent 100%)!important}.ff-hero-copy{width:100%!important;padding:0 22px 48px!important}.ff-hero-heading{font-size:clamp(56px,15vw,84px)!important;max-width:100%!important}.ff-hero-copy p{margin-bottom:20px!important}.ff-hero-actions{flex-wrap:wrap!important}.ff-mobile-menu{display:flex!important}}@media(min-width:768px){.ff-mobile-menu-button,.ff-mobile-menu{display:none!important}}`}</style>
       {/* NAV */}
-      <nav style={{ position:'fixed', top:0, left:0, right:0, zIndex:100, padding:'24px 56px', display:'flex', alignItems:'center', justifyContent:'space-between', background:'linear-gradient(to bottom, rgba(8,8,8,0.95) 0%, transparent 100%)' }}>
+      <nav className="ff-nav" style={{ position:'fixed', top:0, left:0, right:0, zIndex:100, padding:'24px 56px', display:'flex', alignItems:'center', justifyContent:'space-between', background:'linear-gradient(to bottom, rgba(8,8,8,0.95) 0%, transparent 100%)' }}>
         <Link href="/" style={{ display:'flex', alignItems:'center', gap:14 }}>
           <img src="/images/butterfly-maroon.png" alt="FF" style={{ width:36, height:36, objectFit:'contain', filter:'drop-shadow(0 0 8px rgba(255,173,237,0.4))', animation:'flutter 3s ease-in-out infinite' }} />
-          <span style={{ fontFamily:'Cormorant Garamond,serif', fontSize:17, letterSpacing:'0.12em', textTransform:'uppercase' }}>
+          <span className="ff-brand-name" style={{ fontFamily:'Cormorant Garamond,serif', fontSize:17, letterSpacing:'0.12em', textTransform:'uppercase' }}>
             Faithfully <span style={{ color:'#FFADED' }}>Faded</span>™
           </span>
         </Link>
-        <div style={{ display:'flex', gap:36 }}>
+        <div className="ff-desktop-links" style={{ display:'flex', gap:36 }}>
           {[
             { label: 'Drop', href: '/drop' },
             { label: 'Shop', href: '#shop' },
@@ -201,25 +203,26 @@ export default function Home() {
             <Link key={l.label} href={l.href} style={{ color:'#9a7a8e', fontSize:11, letterSpacing:'0.18em', textTransform:'uppercase', transition:'color 0.3s' }}>{l.label}</Link>
           ))}
         </div>
-        <button onClick={() => setDrawerOpen(true)} style={{ background:'none', border:'1px solid rgba(255,173,237,0.2)', color:'#fdf8fc', padding:'10px 24px', fontSize:11, letterSpacing:'0.16em', textTransform:'uppercase', cursor:'pointer', transition:'all 0.3s' }}>Cart ({cart.count})</button>
+        <div style={{display:'flex',alignItems:'center',gap:8}}><button className="ff-mobile-menu-button" aria-label="Toggle navigation menu" aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{display:'none',background:'none',border:'1px solid rgba(255,173,237,.3)',color:'#fdf8fc',padding:'10px 12px',cursor:'pointer'}}>☰</button><button onClick={() => setDrawerOpen(true)} style={{ background:'none', border:'1px solid rgba(255,173,237,0.2)', color:'#fdf8fc', padding:'10px 12px', fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase', cursor:'pointer' }}>Cart ({cart.count})</button></div>
+        {mobileMenuOpen && <div className="ff-mobile-menu" style={{display:'none',position:'absolute',top:'100%',left:0,right:0,background:'#110710',padding:22,flexDirection:'column',gap:18,borderBottom:'1px solid #420420'}}>{[{label:'Drop',href:'/drop'},{label:'Shop',href:'#shop'},{label:'Lookbook',href:'/lookbook'},{label:'Our Story',href:'#story'},{label:'Ahnika',href:'#ahnika'},{label:'Contact',href:'/contact'}].map(l=><Link key={l.label} href={l.href} onClick={()=>setMobileMenuOpen(false)} style={{color:'#fdf8fc',fontSize:14}}>{l.label}</Link>)}</div>}
       </nav>
 
       {/* HERO */}
-      <section style={{ minHeight:'100vh', position:'relative', display:'flex', alignItems:'flex-end', overflow:'hidden' }}>
+      <section className="ff-hero" style={{ minHeight:'100vh', position:'relative', display:'flex', alignItems:'flex-end', overflow:'hidden' }}>
         <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse 80% 100% at 65% 50%, #1a0415 0%, #0d0210 40%, #080808 100%)' }} />
-        <div style={{ position:'absolute', right:0, top:0, bottom:0, width:'52%', overflow:'hidden', pointerEvents:'none' }}>
-          <img src="/images/products/hooded-baseball-jersey-dress.png" alt="Faithfully Faded hooded baseball jersey dress" style={{ position:'absolute', width:'100%', height:'100%', objectFit:'contain', objectPosition:'center bottom', opacity:0.96 }} />
-          <div style={{ position:'absolute', inset:0, background:'linear-gradient(to right, #080808 0%, transparent 22%), linear-gradient(to top, #080808 0%, transparent 18%)' }} />
+        <div className="ff-hero-image-panel" style={{ position:'absolute', right:0, top:0, bottom:0, width:'52%', overflow:'hidden', pointerEvents:'none' }}>
+          <img className="ff-hero-photo" src="/images/products/file_000000008b54820db3cfd85e7a0d6c51.jpg" alt="Faithfully Faded maroon hooded baseball jersey dress campaign photograph" style={{ position:'absolute', width:'100%', height:'100%', objectFit:'cover', objectPosition:'center 25%', opacity:1 }} />
+          <div className="ff-hero-shade" style={{ position:'absolute', inset:0, background:'linear-gradient(to right, #080808 0%, transparent 18%), linear-gradient(to top, #080808 0%, transparent 12%)' }} />
         </div>
-        <div style={{ position:'relative', zIndex:2, padding:'0 80px 90px', width:'54%', animation:'heroIn 1.2s cubic-bezier(.16,1,.3,1) both' }}>
+        <div className="ff-hero-copy" style={{ position:'relative', zIndex:2, padding:'0 80px 90px', width:'54%', animation:'heroIn 1.2s cubic-bezier(.16,1,.3,1) both' }}>
           <div style={{ fontSize:10, letterSpacing:'0.4em', textTransform:'uppercase', color:'#FFADED', marginBottom:20, display:'flex', alignItems:'center', gap:14 }}>
             <span style={{ display:'block', width:40, height:1, background:'#FFADED' }} />New Collection · 2025
           </div>
-          <h1 style={{ fontFamily:'Bebas Neue,sans-serif', fontSize:'clamp(72px,10vw,136px)', lineHeight:0.9, letterSpacing:'0.02em', color:'#fdf8fc', marginBottom:12 }}>
+          <h1 className="ff-hero-heading" style={{ fontFamily:'Bebas Neue,sans-serif', fontSize:'clamp(72px,10vw,136px)', lineHeight:0.9, letterSpacing:'0.02em', color:'#fdf8fc', marginBottom:12 }}>
             Faithfully<span style={{ display:'block', color:'transparent', WebkitTextStroke:'1px #420420' }}>Faded</span>
           </h1>
           <p style={{ fontFamily:'Cormorant Garamond,serif', fontSize:18, fontStyle:'italic', color:'#9a7a8e', marginBottom:48, letterSpacing:'0.06em' }}>Just be Blunt.</p>
-          <div style={{ display:'flex', gap:16, alignItems:'center' }}>
+          <div className="ff-hero-actions" style={{ display:'flex', gap:16, alignItems:'center' }}>
             <Link href="#shop" style={{ background:'#420420', color:'#fdf8fc', padding:'16px 40px', fontSize:11, letterSpacing:'0.2em', textTransform:'uppercase', display:'inline-block' }}>Shop Now</Link>
             <Link href="#story" style={{ color:'#9a7a8e', fontSize:11, letterSpacing:'0.2em', textTransform:'uppercase', padding:'4px 0' }}>Our Story</Link>
           </div>
