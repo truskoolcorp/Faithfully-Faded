@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { decrementOwnedStock, resolveOwnedSku } from '@/lib/commerce-ledger'
+import { decrementOwnedOrder, resolveOwnedSku } from '@/lib/commerce-ledger'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
@@ -27,17 +27,20 @@ export async function POST(req) {
   const externalId=`snipcart-${invoice}`
   const owned=[]
   for(const item of order.items||[]) {
-    const sku=resolveOwnedSku(item)
+    let sku
+    try { sku=resolveOwnedSku(item) } catch { return NextResponse.json({error:'Owned item missing valid size'},{status:422}) }
     if(!sku) continue
-    owned.push({sku,quantity:Math.max(1,Number(item.quantity)||1),itemId:String(item.id)})
+    const quantity=Number(item.quantity)
+    if(!Number.isSafeInteger(quantity)||quantity<1) return NextResponse.json({error:'Invalid owned item quantity'},{status:422})
+    owned.push({sku,quantity})
   }
   if(!owned.length) return NextResponse.json({received:true,ownedStock:false})
   if(isTest) return NextResponse.json({received:true,ownedStock:true,inventoryMode:'dry-run',skus:owned.map(x=>x.sku)})
   try {
-    for(const line of owned) await decrementOwnedStock({eventId:`${externalId}:${line.sku}`,externalOrderId:externalId,sku:line.sku,quantity:line.quantity,payload})
+    await decrementOwnedOrder({externalOrderId:externalId,lines:owned,payload})
     return NextResponse.json({received:true,ownedStock:true,skus:owned.map(x=>x.sku)})
   } catch(err) {
     console.error('[inventory-ledger]',externalId,err?.message||err)
-    return NextResponse.json({error:err?.message||'Inventory ledger failed'},{status:500})
+    return NextResponse.json({error:'Inventory ledger failed'},{status:500})
   }
 }
