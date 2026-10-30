@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
 async function validToken(token) {
-  const key=process.env.SNIPCART_SECRET_API_KEY
+  const key=(process.env.SNIPCART_SECRET_API_KEY || process.env.SNIPCART_SECRET_KEY)
   if(!key) throw new Error('SNIPCART_SECRET_API_KEY is not configured')
   const res=await fetch(`https://app.snipcart.com/api/requestvalidation/${encodeURIComponent(token)}`,{headers:{Accept:'application/json',Authorization:`Basic ${Buffer.from(`${key}:`).toString('base64')}`},cache:'no-store'})
   return res.ok
