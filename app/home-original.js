@@ -88,10 +88,10 @@ export default function Home() {
   const featuredProducts = PRODUCTS.slice(0, 3)
 
   return (
-    <div ref={containerRef}>
+    <div ref={containerRef} className="ff-home">
       {/* CART DRAWER */}
       <div style={{
-        position: 'fixed', top: 0, right: drawerOpen ? 0 : -520, bottom: 0, width: 480, maxWidth: '92vw',
+        position: 'fixed', top: 0, right: drawerOpen ? 0 : -520, visibility: drawerOpen ? 'visible' : 'hidden', bottom: 0, width: 480, maxWidth: '92vw',
         background: '#150b0b', borderLeft: '1px solid rgba(255,173,237,0.15)', zIndex: 200,
         transition: 'right 0.5s cubic-bezier(.16,1,.3,1)', padding: '48px 40px',
         display: 'flex', flexDirection: 'column',
@@ -182,7 +182,7 @@ export default function Home() {
         </button>
       </div>
 
-      <style>{`@media(max-width:767px){.ff-nav{padding:14px 18px!important;gap:12px}.ff-brand-name{font-size:14px!important;white-space:nowrap}.ff-desktop-links{display:none!important}.ff-mobile-menu-button{display:block!important}.ff-hero{min-height:760px!important;min-height:100svh!important;align-items:flex-end!important}.ff-hero-image-panel{left:0!important;right:0!important;top:70px!important;bottom:0!important;width:100%!important}.ff-hero-photo{object-fit:cover!important;object-position:60% 30%!important}.ff-hero-shade{background:linear-gradient(to top,#080808 0%,rgba(8,8,8,.93) 20%,rgba(8,8,8,.25) 55%,transparent 100%)!important}.ff-hero-copy{width:100%!important;padding:0 22px 48px!important}.ff-hero-heading{font-size:clamp(56px,15vw,84px)!important;max-width:100%!important}.ff-hero-copy p{margin-bottom:20px!important}.ff-hero-actions{flex-wrap:wrap!important}.ff-mobile-menu{display:flex!important}}@media(min-width:768px){.ff-mobile-menu-button,.ff-mobile-menu{display:none!important}}`}</style>
+      <style>{`@media(max-width:767px){.ff-home > section:not(.ff-hero){padding:64px 22px!important}.ff-home > footer{padding:48px 22px!important}.ff-home .ff-responsive-grid{grid-template-columns:minmax(0,1fr)!important;gap:28px!important}.ff-home .ff-responsive-grid > *{min-width:0}.ff-nav{padding:14px 18px!important;gap:12px}.ff-brand-name{font-size:14px!important;white-space:nowrap}.ff-desktop-links{display:none!important}.ff-mobile-menu-button{display:block!important}.ff-hero{min-height:760px!important;min-height:100svh!important;align-items:flex-end!important}.ff-hero-image-panel{left:0!important;right:0!important;top:70px!important;bottom:0!important;width:100%!important}.ff-hero-photo{object-fit:cover!important;object-position:60% 30%!important}.ff-hero-shade{background:linear-gradient(to top,#080808 0%,rgba(8,8,8,.93) 20%,rgba(8,8,8,.25) 55%,transparent 100%)!important}.ff-hero-copy{width:100%!important;padding:0 22px 48px!important}.ff-hero-heading{font-size:clamp(56px,15vw,84px)!important;max-width:100%!important}.ff-hero-copy p{margin-bottom:20px!important}.ff-hero-actions{flex-wrap:wrap!important}.ff-mobile-menu{display:flex!important}}@media(min-width:768px){.ff-mobile-menu-button,.ff-mobile-menu{display:none!important}}`}</style>
       {/* NAV */}
       <nav className="ff-nav" style={{ position:'fixed', top:0, left:0, right:0, zIndex:100, padding:'24px 56px', display:'flex', alignItems:'center', justifyContent:'space-between', background:'linear-gradient(to bottom, rgba(8,8,8,0.95) 0%, transparent 100%)' }}>
         <Link href="/" style={{ display:'flex', alignItems:'center', gap:14 }}>
@@ -216,7 +216,7 @@ export default function Home() {
         </div>
         <div className="ff-hero-copy" style={{ position:'relative', zIndex:2, padding:'0 80px 90px', width:'54%', animation:'heroIn 1.2s cubic-bezier(.16,1,.3,1) both' }}>
           <div style={{ fontSize:10, letterSpacing:'0.4em', textTransform:'uppercase', color:'#FFADED', marginBottom:20, display:'flex', alignItems:'center', gap:14 }}>
-            <span style={{ display:'block', width:40, height:1, background:'#FFADED' }} />New Collection · 2025
+            <span style={{ display:'block', width:40, height:1, background:'#FFADED' }} />The Collection
           </div>
           <h1 className="ff-hero-heading" style={{ fontFamily:'Bebas Neue,sans-serif', fontSize:'clamp(72px,10vw,136px)', lineHeight:0.9, letterSpacing:'0.02em', color:'#fdf8fc', marginBottom:12 }}>
             Faithfully<span style={{ display:'block', color:'transparent', WebkitTextStroke:'1px #420420' }}>Faded</span>
@@ -285,7 +285,7 @@ export default function Home() {
           </div>
           <Link href="/lookbook" style={{ color:'#9a7a8e', fontSize:11, letterSpacing:'0.2em', textTransform:'uppercase', borderBottom:'1px solid rgba(255,173,237,0.15)', paddingBottom:4, whiteSpace:'nowrap' }}>View All Styles →</Link>
         </div>
-        <div style={{ display:'grid', gridTemplateColumns:'1.4fr 1fr 1fr', gap:3 }}>
+        <div className="ff-responsive-grid" style={{ display:'grid', gridTemplateColumns:'1.4fr 1fr 1fr', gap:3 }}>
           {featuredProducts.map((p, i) => (
             <Link key={p.id} href={`/shop/${p.id}`} className={`reveal d${i}`} style={{ position:'relative', background:'#0f0b0e', overflow:'hidden', cursor:'pointer', display:'block' }}>
               <div style={{ aspectRatio: i === 0 ? '2/3' : '3/4', background:'linear-gradient(160deg,rgba(66,4,32,0.2) 0%,#0d0808 100%)', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:12, position:'relative', overflow:'hidden' }}>
@@ -309,7 +309,7 @@ export default function Home() {
             </Link>
           ))}
         </div>
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:3, marginTop:3 }}>
+        <div className="ff-responsive-grid" style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:3, marginTop:3 }}>
           {PRODUCTS.slice(3).map((p, i) => (
             <Link key={p.id} href={`/shop/${p.id}`} className={`reveal d${i}`} style={{ position:'relative', background:'#0f0b0e', overflow:'hidden', cursor:'pointer', display:'block' }}>
               <div style={{ aspectRatio:'3/4', background:'linear-gradient(160deg,rgba(66,4,32,0.2) 0%,#0d0808 100%)', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:12, position:'relative' }}>
@@ -333,7 +333,7 @@ export default function Home() {
       {/* STORY */}
       <section id="story" style={{ padding:'120px 80px', background:'#420420', position:'relative', overflow:'hidden' }}>
         <div style={{ position:'absolute', fontFamily:'Bebas Neue,sans-serif', fontSize:'40vw', color:'rgba(0,0,0,0.08)', right:'-8vw', top:'50%', transform:'translateY(-50%)', lineHeight:1, pointerEvents:'none', userSelect:'none' }}>FF</div>
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1.4fr', gap:80, alignItems:'center', position:'relative', zIndex:1 }}>
+        <div className="ff-responsive-grid" style={{ display:'grid', gridTemplateColumns:'1fr 1.4fr', gap:80, alignItems:'center', position:'relative', zIndex:1 }}>
           <div className="reveal">
             <div className="section-label" style={{ color:'rgba(255,173,237,0.7)' }}>Our Story</div>
             <blockquote style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'clamp(32px,4.5vw,58px)', fontWeight:300, fontStyle:'italic', lineHeight:1.2, color:'#fff0fb' }}>
@@ -356,7 +356,7 @@ export default function Home() {
       {/* AHNIKA SECTION */}
       <section id="ahnika" style={{ padding:'120px 80px', background:'#150b0b', position:'relative', overflow:'hidden' }}>
         <div style={{ position:'absolute', width:500, height:500, borderRadius:'50%', background:'radial-gradient(circle,rgba(66,4,32,0.45) 0%,transparent 70%)', top:'50%', left:'50%', animation:'pulse 4s ease-in-out infinite', pointerEvents:'none' }} />
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:80, alignItems:'center', position:'relative', zIndex:1 }}>
+        <div className="ff-responsive-grid" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:80, alignItems:'center', position:'relative', zIndex:1 }}>
           <div className="reveal" style={{ position:'relative', overflow:'hidden', background:'linear-gradient(160deg,#200a0a,#0f0808)', border:'1px solid rgba(255,173,237,0.15)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:60, gap:20, aspectRatio:'3/4' }}>
             <div style={{ position:'absolute', left:0, right:0, height:2, background:'linear-gradient(to right,transparent,#FFADED,transparent)', animation:'scan 3s linear infinite', opacity:0.35 }} />
             <div style={{ animation:'float 3s ease-in-out infinite' }}>
@@ -414,7 +414,7 @@ export default function Home() {
       </section>
 
       {/* NEWSLETTER */}
-      <section style={{ padding:'100px 80px', background:'#420420', display:'grid', gridTemplateColumns:'1fr 1fr', gap:80, alignItems:'center' }}>
+      <section className="ff-responsive-grid" style={{ padding:'100px 80px', background:'#420420', display:'grid', gridTemplateColumns:'1fr 1fr', gap:80, alignItems:'center' }}>
         <div className="reveal">
           <div className="section-label" style={{ color:'rgba(255,173,237,0.7)' }}>Stay Connected</div>
           <h2 style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'clamp(32px,4vw,52px)', fontWeight:300, lineHeight:1.2, color:'#fff0fb' }}>
@@ -444,7 +444,7 @@ export default function Home() {
 
       {/* FOOTER */}
       <footer style={{ padding:'72px 80px 40px', background:'#150b0b', borderTop:'1px solid rgba(255,173,237,0.1)' }}>
-        <div style={{ display:'grid', gridTemplateColumns:'1.5fr 1fr 1fr 1fr', gap:60, marginBottom:60, paddingBottom:60, borderBottom:'1px solid rgba(255,173,237,0.1)' }}>
+        <div className="ff-responsive-grid" style={{ display:'grid', gridTemplateColumns:'1.5fr 1fr 1fr 1fr', gap:60, marginBottom:60, paddingBottom:60, borderBottom:'1px solid rgba(255,173,237,0.1)' }}>
           <div>
             <img src="/images/butterfly-maroon.png" alt="FF" style={{ width:52, height:52, objectFit:'contain', marginBottom:12, filter:'drop-shadow(0 0 8px rgba(255,173,237,0.3))' }} />
             <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:20, letterSpacing:'0.12em', textTransform:'uppercase', marginBottom:14 }}>
@@ -488,7 +488,7 @@ export default function Home() {
           </div>
         </div>
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:12 }}>
-          <div style={{ fontSize:12, color:'#9a7a8e' }}>© 2025 Faithfully Faded™ · A Tru Skool Entertainment Brand</div>
+          <div style={{ fontSize:12, color:'#9a7a8e' }}>© 2026 Faithfully Faded™ · A Tru Skool Entertainment Brand</div>
           <div style={{ display:'flex', gap:24 }}>
             <Link href="/privacy" style={{ fontSize:11, color:'#9a7a8e' }}>Privacy Policy</Link>
             <Link href="/terms" style={{ fontSize:11, color:'#9a7a8e' }}>Terms of Service</Link>
