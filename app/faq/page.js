@@ -3,14 +3,14 @@ import { useState } from 'react'
 import Link from 'next/link'
 
 const faqs = [
-  { q: 'What is the shipping time?', a: 'Standard shipping is 5-7 business days within the US. Express shipping (2-3 business days) is available at checkout. International shipping is coming soon.' },
-  { q: 'Is shipping free?', a: 'Yes! Free standard shipping on all orders over $75. Orders under $75 have a flat rate of $5.99.' },
+  { q: 'What is the shipping time?', a: 'See the Shipping policy and your order confirmation for shipment timing. Available destinations, methods and carrier estimates appear at checkout; production time is separate for made-to-order pieces.' },
+  { q: 'Is shipping free?', a: 'The advertised free-shipping offer applies to eligible orders over $75. Check the final shipping charge and promotion conditions before payment; contact us if the displayed charge differs from an applicable offer.' },
   { q: 'What is your return policy?', a: 'We accept returns within 30 days of delivery. Items must be unworn, unwashed, and in original condition with all tags attached. Exchanges are always free.' },
-  { q: 'How do I start a return or exchange?', a: 'Email us at info@faithfullyfaded.com with your order number and reason. We\'ll send you a prepaid return label within 24 hours.' },
+  { q: 'How do I start a return or exchange?', a: 'Email truskoolcorp@truskool.net with your order number and reason. We will arrange a prepaid label and return or exchange instructions under the Returns policy. Do not send items back before receiving the correct address.' },
   { q: 'Do your clothes run true to size?', a: 'Most pieces run true to size with a relaxed fit. The Hooded Baseball Jersey Dress is designed oversized — size down one for a closer fit. Check our Size Guide for detailed measurements.' },
   { q: 'Is the Verde Edition really limited?', a: 'Yes — limited to exactly 100 units worldwide. Each piece has a numbered interior tag. Once they sell out, this colorway is retired permanently.' },
   { q: 'Can I cancel or modify my order?', a: 'We process orders quickly! Email us within 1 hour of placing your order and we\'ll do our best to accommodate changes.' },
-  { q: 'Do you offer wholesale or bulk pricing?', a: 'Yes! For wholesale inquiries, reach out via our Contact page or email wholesale@faithfullyfaded.com with your business details.' },
+  { q: 'Do you offer wholesale or bulk pricing?', a: 'Yes! For wholesale inquiries, reach out via our Contact page or email truskoolcorp@truskool.net with your business details.' },
   { q: 'Who is Ahnika?', a: 'Ahnika Merlot is our AI-powered style curator. She knows the collection inside out and can help with outfit recommendations, sizing advice, and more. Chat with her anytime from the butterfly icon on our site!' },
 ]
 
@@ -30,6 +30,7 @@ export default function FAQ() {
         <h1 style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'clamp(36px,5vw,64px)', fontWeight:300 }}>Frequently <em style={{ fontStyle:'italic', color:'#FFADED' }}>Asked</em></h1>
       </div>
       <div className="page-content" style={{ maxWidth:800 }}>
+        <nav aria-label="Store policies" style={{display:'flex',flexWrap:'wrap',gap:20,marginBottom:32}}><Link href="/shipping">Shipping</Link><Link href="/returns">Returns &amp; refunds</Link><Link href="/privacy">Privacy</Link><Link href="/terms">Terms</Link></nav>
         {faqs.map((faq, i) => (
           <div key={i} style={{ borderBottom:'1px solid rgba(255,173,237,0.1)' }}>
             <button onClick={() => setOpen(open === i ? null : i)} style={{

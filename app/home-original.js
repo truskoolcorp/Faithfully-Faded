@@ -481,7 +481,7 @@ export default function Home() {
           <div>
             <div style={{ fontSize:10, letterSpacing:'0.3em', textTransform:'uppercase', color:'#FFADED', marginBottom:24 }}>Support</div>
             <ul style={{ listStyle:'none', display:'flex', flexDirection:'column', gap:12 }}>
-              {[{ label:'Shipping Info', href:'/faq' }, { label:'Returns', href:'/faq' }, { label:'Privacy Policy', href:'/privacy' }, { label:'Terms of Service', href:'/terms' }].map(l => (
+              {[{ label:'Shipping Info', href:'/shipping' }, { label:'Returns', href:'/returns' }, { label:'Privacy Policy', href:'/privacy' }, { label:'Terms of Service', href:'/terms' }].map(l => (
                 <li key={l.label}><Link href={l.href} style={{ color:'#9a7a8e', fontSize:13 }}>{l.label}</Link></li>
               ))}
             </ul>
