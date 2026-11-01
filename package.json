@@ -9,9 +9,15 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",
-    "next": "^15.3.2",
-    "react": "^19",
-    "react-dom": "^19"
+    "next": "15.5.28",
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
   },
-  "description": "Faithfully Faded storefront"
+  "description": "Faithfully Faded storefront",
+  "overrides": {
+    "next": {
+      "sharp": "0.35.5",
+      "postcss": "8.5.32"
+    }
+  }
 }
