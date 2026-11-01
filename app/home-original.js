@@ -42,10 +42,6 @@ export default function Home() {
   ])
   const [chatInput, setChatInput] = useState('')
   const [chatLoading, setChatLoading] = useState(false)
-  const [nlEmail, setNlEmail] = useState('')
-  const [nlName, setNlName] = useState('')
-  const [nlSubmitted, setNlSubmitted] = useState(false)
-  const [nlLoading, setNlLoading] = useState(false)
   const containerRef = useReveal()
   const chatEndRef = useRef(null)
 
@@ -69,20 +65,6 @@ export default function Home() {
       console.error('Chat error:', err)
       setChatMessages(p => [...p, { role: 'assistant', text: "Sorry love, I'm having a moment. Try again? 💕" }])
     } finally { setChatLoading(false) }
-  }
-
-  const submitNewsletter = async (e) => {
-    e.preventDefault()
-    if (!nlEmail.trim()) return
-    setNlLoading(true)
-    try {
-      await fetch('/api/newsletter', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: nlEmail, name: nlName }),
-      })
-      setNlSubmitted(true)
-    } catch {} finally { setNlLoading(false) }
   }
 
   const featuredProducts = PRODUCTS.slice(0, 3)
@@ -368,7 +350,7 @@ export default function Home() {
           <div className="reveal d1">
             <div className="section-label">Meet Your Stylist</div>
             <div style={{ display:'inline-block', background:'rgba(255,173,237,0.08)', border:'1px solid rgba(255,173,237,0.25)', color:'#FFADED', fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase', padding:'8px 20px', marginBottom:24 }}>
-              Powered by AI · Live Now
+              Catalog guide · Available now
             </div>
             <h2 style={{ fontFamily:'Cormorant Garamond,serif', fontSize:'clamp(28px,3.5vw,48px)', fontWeight:300, lineHeight:1.2, marginBottom:24 }}>
               Meet <em style={{ fontStyle:'italic', color:'#FFADED' }}>Ahnika</em>,<br />Your Personal<br />Style Guide
@@ -377,7 +359,7 @@ export default function Home() {
               Ahnika Merlot is Faithfully Faded&apos;s AI style curator — always on, always on-brand. She knows the collection inside out and helps you find your perfect look.
             </p>
             <ul style={{ listStyle:'none', marginBottom:40 }}>
-              {['Personalized outfit recommendations', 'Live style consultations, 24/7', 'Real-time inventory awareness', 'Cultural context behind each piece'].map(f => (
+              {['Catalog and product-page guidance', 'Size-guide and policy navigation', 'Links to current product availability', 'Cultural context behind each piece'].map(f => (
                 <li key={f} style={{ padding:'12px 0', borderBottom:'1px solid rgba(255,173,237,0.08)', fontSize:13, color:'#cfc0cb', display:'flex', alignItems:'center', gap:14 }}>
                   <span style={{ color:'#FFADED', fontSize:8 }}>◆</span>{f}
                 </li>
@@ -409,7 +391,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <button style={{ background:'none', border:'1px solid rgba(255,173,237,0.25)', color:'#FFADED', padding:'16px 40px', fontSize:11, letterSpacing:'0.2em', textTransform:'uppercase', cursor:'pointer' }}>Notify Me When It&apos;s Live</button>
+          <a href="mailto:truskoolcorp@truskool.net?subject=Faithfully%20Faded%20Try-On%20Launch%20Information" style={{display:'inline-block',border:'1px solid rgba(255,173,237,.25)',color:'#FFADED',padding:'16px 28px',fontSize:11}}>Request try-on launch information by email</a>
         </div>
       </section>
 
@@ -422,23 +404,10 @@ export default function Home() {
           </h2>
         </div>
         <div className="reveal d1">
-          {nlSubmitted ? (
-            <div style={{ textAlign:'center', padding:40 }}>
-              <img src="/images/butterfly-maroon.png" alt="" style={{ width:48, height:48, objectFit:'contain', marginBottom:16 }} />
-              <div style={{ fontFamily:'Cormorant Garamond,serif', fontSize:24, color:'#FFADED', marginBottom:8 }}>You&apos;re in.</div>
-              <p style={{ fontSize:13, color:'rgba(255,240,251,0.6)' }}>Check your inbox for your 15% off code.</p>
-            </div>
-          ) : (
-            <form onSubmit={submitNewsletter} style={{ display:'flex', flexDirection:'column', gap:14 }}>
-              <input value={nlEmail} onChange={e => setNlEmail(e.target.value)} type="email" required placeholder="Your email address"
-                style={{ background:'rgba(0,0,0,0.2)', border:'1px solid rgba(255,255,255,0.18)', color:'#fdf8fc', padding:'16px 22px', fontSize:14, outline:'none', width:'100%' }} />
-              <input value={nlName} onChange={e => setNlName(e.target.value)} placeholder="First name (optional)"
-                style={{ background:'rgba(0,0,0,0.2)', border:'1px solid rgba(255,255,255,0.18)', color:'#fdf8fc', padding:'16px 22px', fontSize:14, outline:'none', width:'100%' }} />
-              <button type="submit" disabled={nlLoading}
-                style={{ background:'#080808', color:'#FFADED', border:'none', padding:'16px 32px', fontSize:11, letterSpacing:'0.2em', textTransform:'uppercase', cursor:'pointer', alignSelf:'flex-start' }}
-              >{nlLoading ? 'Subscribing...' : 'Subscribe & Get 15% Off →'}</button>
-            </form>
-          )}
+          <p style={{fontSize:14,lineHeight:1.8,color:'#fff0fb',marginBottom:20}}>Want collection updates? Open an email draft to request them from our team.</p>
+          <a href="mailto:truskoolcorp@truskool.net?subject=Faithfully%20Faded%20Collection%20Updates%20Request" style={{display:'inline-block',background:'#080808',color:'#FFADED',padding:'16px 24px',fontSize:11,letterSpacing:'.12em',textTransform:'uppercase'}}>Request updates by email →</a>
+          <p style={{fontSize:12,lineHeight:1.7,color:'rgba(255,240,251,.7)',marginTop:16}}>Send the draft through your email app. Opening it does not subscribe you, confirm receipt, or send a discount code.</p>
+          <Link href="/drop" style={{display:'inline-block',marginTop:16,textDecoration:'underline',color:'#FFADED'}}>View current offers</Link>
         </div>
       </section>
 
