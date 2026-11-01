@@ -111,14 +111,17 @@ export default function ProductPage() {
             data-item-id={product.id}
             data-item-name={product.name}
             data-item-price={product.price}
-            data-item-url={`/shop/${product.id}`}
+            data-item-url={isOwned ? `https://www.faithfully-faded.com/api/catalog/${product.id}` : `/shop/${product.id}`}
             data-item-description={product.fulfillmentStatus === 'pre-order' ? `PRE-ORDER — not ready to ship; delivery timing is not guaranteed. ${product.description}` : product.description}
             data-item-image={activeImage ? `https://www.faithfully-faded.com${activeImage}` : undefined}
             data-item-custom1-name={product.colors.length ? "Color" : undefined}
             data-item-custom1-options={product.colors.length ? product.colors.map(c => c.name).join('|') : undefined}
             data-item-custom1-value={activeColor?.name}
+            data-item-custom1-required={product.colors.length ? 'true' : undefined}
             data-item-custom2-name="Size"
-            data-item-custom2-options={product.sizes.join('|')}
+            data-item-custom2-options={product.sizes.filter(sizeAvailable).join('|')}
+            data-item-custom2-required="true"
+            data-item-max-quantity={isOwned && selectedSize ? ownedSizes?.[selectedSize] : undefined}
             data-item-custom2-value={selectedSize || product.sizes[0]}
             style={{
               width:'100%', padding:20, fontSize:12, letterSpacing:'0.2em', textTransform:'uppercase', border:'none', transition:'all 0.3s',
