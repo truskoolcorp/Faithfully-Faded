@@ -1,5 +1,6 @@
 import './globals.css'
 import CartButton from './CartButton'
+import Script from 'next/script'
 
 export const metadata = {
   title: 'Faithfully Faded™ — Distinctive Apparel',
@@ -33,6 +34,20 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         {children}
+        <Script id="metricool-faithfully-faded" strategy="afterInteractive">{`
+          (function () {
+            function loadMetricool() {
+              if (window.beTracker) {
+                window.beTracker.t({ hash: 'be0da4f65b817d45a4c5f66581f8bb57' });
+              }
+            }
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'https://tracker.metricool.com/resources/be.js';
+            script.onload = loadMetricool;
+            document.head.appendChild(script);
+          })();
+        `}</Script>
         <CartButton />
         {snipcartKey && <div
           hidden
