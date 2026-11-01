@@ -404,9 +404,9 @@ export default function Home() {
           </h2>
         </div>
         <div className="reveal d1">
-          <p style={{fontSize:14,lineHeight:1.8,color:'#fff0fb',marginBottom:20}}>Want collection updates? Open an email draft to request them from our team.</p>
-          <a href="mailto:truskoolcorp@truskool.net?subject=Faithfully%20Faded%20Collection%20Updates%20Request" style={{display:'inline-block',background:'#080808',color:'#FFADED',padding:'16px 24px',fontSize:11,letterSpacing:'.12em',textTransform:'uppercase'}}>Request updates by email →</a>
-          <p style={{fontSize:12,lineHeight:1.7,color:'rgba(255,240,251,.7)',marginTop:16}}>Send the draft through your email app. Opening it does not subscribe you, confirm receipt, or send a discount code.</p>
+          <p style={{fontSize:14,lineHeight:1.8,color:'#fff0fb',marginBottom:20}}>Get collection updates and promotional offers. Confirm your email before joining.</p>
+          <a href="/newsletter" style={{display:'inline-block',background:'#080808',color:'#FFADED',padding:'16px 24px',fontSize:11,letterSpacing:'.12em',textTransform:'uppercase'}}>Sign up for email updates →</a>
+          <p style={{fontSize:12,lineHeight:1.7,color:'rgba(255,240,251,.7)',marginTop:16}}>Signup requires your consent and email confirmation. You can unsubscribe at any time; no discount code or purchase is created.</p>
           <Link href="/drop" style={{display:'inline-block',marginTop:16,textDecoration:'underline',color:'#FFADED'}}>View current offers</Link>
         </div>
       </section>
