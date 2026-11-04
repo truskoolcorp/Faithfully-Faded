@@ -457,7 +457,7 @@ export default function Home() {
           </div>
         </div>
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:12 }}>
-          <div style={{ fontSize:12, color:'#9a7a8e' }}>© 2026 Faithfully Faded™ · A Tru Skool Entertainment Brand</div>
+          <div style={{ fontSize:12, color:'#9a7a8e' }}>© 2026 Faithfully Faded LLC · Managed by Tru Skool Entertainment International Corp</div>
           <div style={{ display:'flex', gap:24 }}>
             <Link href="/privacy" style={{ fontSize:11, color:'#9a7a8e' }}>Privacy Policy</Link>
             <Link href="/terms" style={{ fontSize:11, color:'#9a7a8e' }}>Terms of Service</Link>
