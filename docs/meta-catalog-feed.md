@@ -36,7 +36,8 @@ RSS feed and must not be used as a product feed.
   eligibility check. No quantity is fabricated, rounded, or manually copied.
 - The other five storefront designs are excluded. Adding a product to the
   storefront cannot silently add it to this feed.
-- The feed uses the existing product photograph and canonical product page,
+- The feed uses the owner-confirmed front/back photograph at
+  `/images/products/hooded-baseball-jersey-dress-front-back-v2.jpg` and canonical product page,
   not the Snipcart validation API. It does not claim variant preselection on
   the product page. The shopper still chooses a size there.
 - Items use retail condition `new`. Confirm that condition, the source price,
@@ -120,3 +121,24 @@ using the approved catalog procedure. Setting `FF_META_CATALOG_FEED_ENABLED`
 to `false` and redeploying returns 404 but does **not** clear Meta's cached
 availability. For an application regression, restore the last known-good
 production deployment through Vercel; do not mutate the inventory ledger.
+
+## Dress photograph correction (2026-11-08)
+
+The owner supplied and confirmed the front/back JPEG used for the storefront,
+Snipcart metadata and Meta feed. The versioned
+filename forces consumers to fetch the corrected asset rather than reuse the
+prior image. The original JPEG is copied without cropping, retouching or
+re-encoding: 1066 × 1600 pixels, 419757 bytes, SHA-256
+`cd89448c0271455cfc3fc2035e3184d060f239796a816db1ba66de002b1ba461`.
+
+The reviewed image allowlist changes with the source metadata. The inaccurate
+pocket detail is removed without adding positive or negative pocket wording
+to customer-facing copy, as requested by the owner.
+No prices, SKU IDs, inventory reads, availability rules or checkout gates
+change. Existing material, embroidery, fit and care claims were not verified
+by this image correction and need owner confirmation separately.
+
+After deployment, verify the live JPEG hash, all four feed image URLs,
+current quantities, checkout image metadata, and the desktop/mobile hero,
+shop card, product page, Lookbook and Drop views. Meta must fetch and accept
+the feed before its cached item images change.

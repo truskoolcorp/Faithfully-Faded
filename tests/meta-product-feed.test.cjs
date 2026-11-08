@@ -53,7 +53,7 @@ test('uses current metadata and currency, canonical links, image, group, size an
   for (const snippet of ['<g:price>69.00 USD</g:price>', '<g:color>Maroon</g:color>',
     '<g:item_group_id>hooded-baseball-jersey-dress</g:item_group_id>',
     '<g:link>https://www.faithfully-faded.com/shop/hooded-baseball-jersey-dress</g:link>',
-    '<g:image_link>https://www.faithfully-faded.com/images/products/hooded-baseball-jersey-dress-product.png</g:image_link>',
+    '<g:image_link>https://www.faithfully-faded.com/images/products/hooded-baseball-jersey-dress-front-back-v2.jpg</g:image_link>',
     '<g:brand>Faithfully Faded</g:brand>', '<g:condition>new</g:condition>']) assert.ok(xml.includes(snippet))
   for (const size of ['S', 'M', 'L', 'XL']) assert.ok(xml.includes(`<g:size>${size}</g:size>`))
   assert.equal(xml.includes('/api/catalog/'), false)

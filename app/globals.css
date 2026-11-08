@@ -36,9 +36,14 @@ button { font-family: var(--font-body); }
 /* Homepage-only product art for legacy card renderer. Keep these scoped to #shop
    so Lookbook, Drop and product pages can render their own clean catalog art. */
 #shop a[href='/shop/hooded-baseball-jersey-dress'] > div:first-child {
-  background-image: linear-gradient(to top, rgba(8,8,8,.18), rgba(8,8,8,.02)), url('/images/products/hooded-baseball-jersey-dress.png') !important;
-  background-size: cover !important;
-  background-position: center top !important;
+  background-image: url('/images/products/hooded-baseball-jersey-dress-front-back-v2.jpg') !important;
+  background-size: contain !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+/* Keep the owner-confirmed front/back view unobscured by the legacy card shade. */
+#shop a[href='/shop/hooded-baseball-jersey-dress'] > div:first-child > div:first-of-type {
+  display: none;
 }
 #shop a[href='/shop/butterfly-varsity-tee'] > div:first-child {
   background-image: linear-gradient(to top, rgba(8,8,8,.15), rgba(8,8,8,.02)), url('/images/products/butterfly-varsity-tee.png') !important;
@@ -92,3 +97,13 @@ button { font-family: var(--font-body); }
 /* Snipcart cart/checkout always sits above the fixed page navs and the bag button */
 #snipcart { position: relative; z-index: 2147483000; }
 .snipcart-modal__container, .snipcart-modal { z-index: 2147483000 !important; }
+
+/* Preserve a readable, complete front/back dress photo on narrow screens. */
+@media (max-width: 767px) {
+  .ff-dress-product-page .ff-product-nav { padding: 18px 22px !important; flex-wrap: wrap; gap: 14px; }
+  .ff-dress-product-page .ff-product-nav > div { gap: 20px !important; }
+  .ff-dress-product-page .ff-product-breadcrumbs { padding: 24px 22px 0 !important; }
+  .ff-dress-product-page .ff-product-layout { grid-template-columns: minmax(0, 1fr) !important; gap: 32px !important; padding: 0 22px 48px !important; }
+  .ff-dress-product-page .ff-product-related { padding: 48px 22px !important; }
+  .ff-dress-product-page .ff-product-related > div { grid-template-columns: minmax(0, 1fr) !important; }
+}
