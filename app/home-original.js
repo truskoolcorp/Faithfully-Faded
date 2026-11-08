@@ -68,6 +68,7 @@ export default function Home() {
   }
 
   const featuredProducts = PRODUCTS.slice(0, 3)
+  const heroProduct = PRODUCTS.find(p => p.id === 'hooded-baseball-jersey-dress')
 
   return (
     <div ref={containerRef} className="ff-home">
@@ -164,7 +165,7 @@ export default function Home() {
         </button>
       </div>
 
-      <style>{`@media(max-width:767px){.ff-home > section:not(.ff-hero){padding:64px 22px!important}.ff-home > footer{padding:48px 22px!important}.ff-home .ff-responsive-grid{grid-template-columns:minmax(0,1fr)!important;gap:28px!important}.ff-home .ff-responsive-grid > *{min-width:0}.ff-nav{padding:14px 18px!important;gap:12px}.ff-brand-name{font-size:14px!important;white-space:nowrap}.ff-desktop-links{display:none!important}.ff-mobile-menu-button{display:block!important}.ff-hero{min-height:760px!important;min-height:100svh!important;align-items:flex-end!important}.ff-hero-image-panel{left:0!important;right:0!important;top:70px!important;bottom:0!important;width:100%!important}.ff-hero-photo{object-fit:cover!important;object-position:60% 30%!important}.ff-hero-shade{background:linear-gradient(to top,#080808 0%,rgba(8,8,8,.93) 20%,rgba(8,8,8,.25) 55%,transparent 100%)!important}.ff-hero-copy{width:100%!important;padding:0 22px 48px!important}.ff-hero-heading{font-size:clamp(56px,15vw,84px)!important;max-width:100%!important}.ff-hero-copy p{margin-bottom:20px!important}.ff-hero-actions{flex-wrap:wrap!important}.ff-mobile-menu{display:flex!important}}@media(min-width:768px){.ff-mobile-menu-button,.ff-mobile-menu{display:none!important}}`}</style>
+      <style>{`@media(max-width:767px){.ff-home > section:not(.ff-hero){padding:64px 22px!important}.ff-home > footer{padding:48px 22px!important}.ff-home .ff-responsive-grid{grid-template-columns:minmax(0,1fr)!important;gap:28px!important}.ff-home .ff-responsive-grid > *{min-width:0}.ff-nav{padding:14px 18px!important;gap:12px}.ff-brand-name{font-size:14px!important;white-space:nowrap}.ff-desktop-links{display:none!important}.ff-mobile-menu-button{display:block!important}.ff-hero{min-height:0!important;flex-direction:column!important;align-items:center!important;padding-top:80px!important;gap:32px!important}.ff-hero-image-panel{position:relative!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;width:min(100%,440px)!important;aspect-ratio:1066/1600}.ff-hero-photo{object-fit:contain!important;object-position:center!important}.ff-hero-copy{width:100%!important;padding:0 22px 48px!important}.ff-hero-heading{font-size:clamp(56px,15vw,84px)!important;max-width:100%!important}.ff-hero-copy p{margin-bottom:20px!important}.ff-hero-actions{flex-wrap:wrap!important}.ff-mobile-menu{display:flex!important}}@media(min-width:768px){.ff-mobile-menu-button,.ff-mobile-menu{display:none!important}}`}</style>
       {/* NAV */}
       <nav className="ff-nav" style={{ position:'fixed', top:0, left:0, right:0, zIndex:100, padding:'24px 56px', display:'flex', alignItems:'center', justifyContent:'space-between', background:'linear-gradient(to bottom, rgba(8,8,8,0.95) 0%, transparent 100%)' }}>
         <Link href="/" style={{ display:'flex', alignItems:'center', gap:14 }}>
@@ -192,15 +193,14 @@ export default function Home() {
       {/* HERO */}
       <section className="ff-hero" style={{ minHeight:'100vh', position:'relative', display:'flex', alignItems:'flex-end', overflow:'hidden' }}>
         <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse 80% 100% at 65% 50%, #1a0415 0%, #0d0210 40%, #080808 100%)' }} />
-        <div className="ff-hero-image-panel" style={{ position:'absolute', right:0, top:0, bottom:0, width:'52%', overflow:'hidden', pointerEvents:'none' }}>
-          <img className="ff-hero-photo" src="/images/products/file_000000008b54820db3cfd85e7a0d6c51.jpg" alt="Faithfully Faded maroon hooded baseball jersey dress campaign photograph" style={{ position:'absolute', width:'100%', height:'100%', objectFit:'cover', objectPosition:'center 25%', opacity:1 }} />
-          <div className="ff-hero-shade" style={{ position:'absolute', inset:0, background:'linear-gradient(to right, #080808 0%, transparent 18%), linear-gradient(to top, #080808 0%, transparent 12%)' }} />
+        <div className="ff-hero-image-panel" style={{ position:'absolute', right:24, top:90, bottom:32, width:'48%', overflow:'hidden', pointerEvents:'none' }}>
+          <img className="ff-hero-photo" src={heroProduct.image} alt={heroProduct.imageAlt} style={{ position:'absolute', width:'100%', height:'100%', objectFit:'contain', objectPosition:'center', opacity:1 }} />
         </div>
-        <div className="ff-hero-copy" style={{ position:'relative', zIndex:2, padding:'0 80px 90px', width:'54%', animation:'heroIn 1.2s cubic-bezier(.16,1,.3,1) both' }}>
+        <div className="ff-hero-copy" style={{ position:'relative', zIndex:2, padding:'0 40px 90px', width:'48%', animation:'heroIn 1.2s cubic-bezier(.16,1,.3,1) both' }}>
           <div style={{ fontSize:10, letterSpacing:'0.4em', textTransform:'uppercase', color:'#FFADED', marginBottom:20, display:'flex', alignItems:'center', gap:14 }}>
             <span style={{ display:'block', width:40, height:1, background:'#FFADED' }} />The Collection
           </div>
-          <h1 className="ff-hero-heading" style={{ fontFamily:'Bebas Neue,sans-serif', fontSize:'clamp(72px,10vw,136px)', lineHeight:0.9, letterSpacing:'0.02em', color:'#fdf8fc', marginBottom:12 }}>
+          <h1 className="ff-hero-heading" style={{ fontFamily:'Bebas Neue,sans-serif', fontSize:'clamp(56px,8vw,116px)', lineHeight:0.9, letterSpacing:'0.02em', color:'#fdf8fc', marginBottom:12 }}>
             Faithfully<span style={{ display:'block', color:'transparent', WebkitTextStroke:'1px #420420' }}>Faded</span>
           </h1>
           <p style={{ fontFamily:'Cormorant Garamond,serif', fontSize:18, fontStyle:'italic', color:'#9a7a8e', marginBottom:48, letterSpacing:'0.06em' }}>Just be Blunt.</p>

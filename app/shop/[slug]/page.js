@@ -37,8 +37,8 @@ export default function ProductPage() {
   }
 
   return (
-    <div style={{ paddingTop:100 }}>
-      <nav style={{ position:'fixed', top:0, left:0, right:0, zIndex:100, padding:'24px 56px', display:'flex', alignItems:'center', justifyContent:'space-between', background:'rgba(8,8,8,0.95)' }}>
+    <div className={isOwned ? 'ff-dress-product-page' : undefined} style={{ paddingTop:100 }}>
+      <nav className="ff-product-nav" style={{ position:'fixed', top:0, left:0, right:0, zIndex:100, padding:'24px 56px', display:'flex', alignItems:'center', justifyContent:'space-between', background:'rgba(8,8,8,0.95)' }}>
         <Link href="/" style={{ display:'flex', alignItems:'center', gap:14 }}>
           <img src="/images/butterfly-maroon.png" alt="FF" style={{ width:36, height:36, objectFit:'contain', filter:'drop-shadow(0 0 8px rgba(255,173,237,0.4))' }} />
           <span style={{ fontFamily:'Cormorant Garamond,serif', fontSize:17, letterSpacing:'0.12em', textTransform:'uppercase' }}>
@@ -52,16 +52,16 @@ export default function ProductPage() {
         </div>
       </nav>
 
-      <div style={{ padding:'0 80px', marginBottom:40 }}>
+      <div className="ff-product-breadcrumbs" style={{ padding:'0 80px', marginBottom:40 }}>
         <div style={{ fontSize:11, color:'#9a7a8e', display:'flex', gap:8 }}>
           <Link href="/" style={{ color:'#9a7a8e' }}>Home</Link> / <Link href="/#shop" style={{ color:'#9a7a8e' }}>Shop</Link> / <span style={{ color:'#FFADED' }}>{product.name}</span>
         </div>
       </div>
 
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:80, padding:'0 80px 80px' }}>
+      <div className="ff-product-layout" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:80, padding:'0 80px 80px' }}>
         <div style={{ aspectRatio:'3/4', background:'linear-gradient(160deg,rgba(66,4,32,0.2),#0d0808)', display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:16, border:'1px solid rgba(255,173,237,0.1)', position:'relative', overflow:'hidden' }}>
           {product.image ? (
-            <img src={activeImage} alt={`${product.name} — ${activeColor?.name || 'product'}`} onError={() => setVariantImageFailed(true)} style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center' }} />
+            <img src={activeImage} alt={product.imageAlt || `${product.name} — ${activeColor?.name || 'product'}`} onError={() => setVariantImageFailed(true)} style={{ width:'100%', height:'100%', objectFit:product.imageFit || 'cover', objectPosition:'center' }} />
           ) : (
             <>
               <span style={{ fontSize:100, opacity:0.3 }}>{product.emoji}</span>
@@ -141,13 +141,13 @@ export default function ProductPage() {
         </div>
       </div>
 
-      <section style={{ padding:'80px', background:'#150b0b', borderTop:'1px solid rgba(255,173,237,0.1)' }}>
+      <section className="ff-product-related" style={{ padding:'80px', background:'#150b0b', borderTop:'1px solid rgba(255,173,237,0.1)' }}>
         <h3 style={{ fontFamily:'Cormorant Garamond,serif', fontSize:28, fontWeight:300, marginBottom:40 }}>You May Also Like</h3>
         <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:3 }}>
           {related.map(p => (
             <Link key={p.id} href={`/shop/${p.id}`} style={{ background:'#0f0b0e', display:'block' }}>
               <div style={{ aspectRatio:'3/4', background:'linear-gradient(160deg,rgba(66,4,32,0.2),#0d0808)', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
-                {p.image ? <img src={p.image} alt={p.name} style={{ width:'100%', height:'100%', objectFit:'cover', objectPosition:'center' }} /> : <span style={{ fontSize:48, opacity:0.25 }}>{p.emoji}</span>}
+                {p.image ? <img src={p.image} alt={p.imageAlt || p.name} style={{ width:'100%', height:'100%', objectFit:p.imageFit || 'cover', objectPosition:'center' }} /> : <span style={{ fontSize:48, opacity:0.25 }}>{p.emoji}</span>}
               </div>
               <div style={{ padding:'20px 24px', borderTop:'1px solid rgba(255,173,237,0.1)', display:'flex', justifyContent:'space-between' }}>
                 <div>

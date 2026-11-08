@@ -18,8 +18,7 @@ function syncProductArt() {
     card.style.alignSelf = 'start'
     card.style.height = 'auto'
 
-    // Use the intended homepage art when one is defined (for example the
-    // modeled jersey hero), otherwise fall back to the catalog product image.
+    // Use reviewed homepage art when defined; otherwise use the catalog image.
     const image = product.featuredImage || product.image
 
     art.querySelectorAll(':scope > img[data-product-art="true"]').forEach(img => img.remove())
