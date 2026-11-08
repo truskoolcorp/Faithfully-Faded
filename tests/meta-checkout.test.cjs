@@ -216,3 +216,35 @@ test('verified Instagram footer destination is isolated from other networks', ()
  assert.ok(source.includes('https://facebook.com/faithfullyfaded23'))
  assert.ok(source.includes('https://tiktok.com/@faithfullyfaded23'))
 })
+
+
+test('SDK verification errors expose bounded compatibility reasons only', async () => {
+  const c=await cart,p=await payload(),s=sdk();await c.applyCheckoutCart(s,p)
+  const item=s.store.getState().cart.items.items[0]
+  item.basePrice={usd:69,privateToken:'NEVER_LOG'}
+  item.customer={email:'NEVER_LOG'}
+  assert.throws(()=>c.verifyCart(s,p),error=>{
+    assert.equal(error.checkoutDiagnostic.reason,'price-type')
+    assert.equal(error.checkoutDiagnostic.basePriceType,'object')
+    assert.equal(error.checkoutDiagnostic.usdBasePrice,69)
+    assert.doesNotMatch(JSON.stringify(error.checkoutDiagnostic),/NEVER_LOG|uniqueId|customer/)
+    return true
+  })
+  item.basePrice=p.items[0].price;item.quantity='2'
+  assert.throws(()=>c.verifyCart(s,p),error=>error.checkoutDiagnostic.reason==='quantity')
+  item.quantity=p.items[0].quantity;item.basePrice=Infinity
+  assert.throws(()=>c.verifyCart(s,p),error=>error.checkoutDiagnostic.reason==='price-value')
+  item.basePrice=p.items[0].price;item.customFields=[]
+  assert.throws(()=>c.verifyCart(s,p),error=>error.checkoutDiagnostic.reason==='variant')
+})
+
+
+test('diagnostic logging boundary sanitizes even an arbitrary external SDK error', async () => {
+  const c=await cart
+  assert.equal(c.checkoutDiagnostic(Error('anything')),null)
+  assert.equal(c.checkoutDiagnostic({checkoutDiagnostic:{reason:'PRIVATE'}}),null)
+  const result=c.checkoutDiagnostic({checkoutDiagnostic:{reason:'price-type',quantityType:'PRIVATE',basePriceType:'object',matchCount:1,basePrice:NaN,usdBasePrice:{secret:'PRIVATE'},token:'PRIVATE'}})
+  assert.equal(result.quantityType,'unknown');assert.equal(result.matchCount,1)
+  assert.equal(result.basePrice,null);assert.equal(result.usdBasePrice,null)
+  assert.doesNotMatch(JSON.stringify(result),/PRIVATE|token|secret/)
+})
