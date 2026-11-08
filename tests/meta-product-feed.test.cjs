@@ -18,7 +18,20 @@ const handler = overrides => feed.createMetaFeedHandler({
   getProduct: () => product(), readInventory: async () => rows(),
   enabled: () => true, environment: () => 'production', ...overrides,
 })
-const availabilities = xml => [...xml.matchAll(/<g:availability>(.*?)<\/g:availability>/g)].map(m => m[1])
+function assertStock(xml, expected) {
+  const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].map(m => m[1])
+  assert.equal(items.length, expected.length)
+  items.forEach((item, index) => {
+    const quantities = [...item.matchAll(/<g:quantity_to_sell_on_facebook>(.*?)<\/g:quantity_to_sell_on_facebook>/g)]
+    assert.equal(quantities.length, 1, 'exactly one quantity per variant')
+    assert.match(quantities[0][1], /^(0|[1-9]\d*)$/, 'quantity is a canonical nonnegative integer')
+    assert.equal(quantities[0][1], String(expected[index]), 'exact sellable quantity without rounding')
+    const availability = [...item.matchAll(/<g:availability>(.*?)<\/g:availability>/g)]
+    assert.equal(availability.length, 1)
+    assert.equal(availability[0][1], expected[index] > 0 ? 'in stock' : 'out of stock')
+  })
+}
+const assertZeroStock = xml => assertStock(xml, [0, 0, 0, 0])
 
 test('exports exactly the four stable reviewed variant IDs, never preorder designs', async () => {
   const response = await handler()()
@@ -32,7 +45,7 @@ test('exports exactly the four stable reviewed variant IDs, never preorder desig
   }
   assert.equal(xml.includes('PRE-ORDER'), false)
   assert.equal(xml.includes('In stock and ready'), false)
-  assert.equal(xml.includes('<g:quantity'), false)
+  assertStock(xml, [0, 3, 0, 7])
   assert.equal(xml.includes('on_hand'), false)
 })
 test('uses current metadata and currency, canonical links, image, group, size and color', async () => {
@@ -44,28 +57,57 @@ test('uses current metadata and currency, canonical links, image, group, size an
     '<g:brand>Faithfully Faded</g:brand>', '<g:condition>new</g:condition>']) assert.ok(xml.includes(snippet))
   for (const size of ['S', 'M', 'L', 'XL']) assert.ok(xml.includes(`<g:size>${size}</g:size>`))
   assert.equal(xml.includes('/api/catalog/'), false)
-  assert.equal(xml.includes('quantity_to_sell_on_facebook'), false)
+  assertStock(xml, [0, 3, 0, 7])
 })
 test('availability subtracts reservations and retains zero-stock rows', async () => {
   const response = await handler()()
   assert.equal(response.headers.get('x-ff-inventory-status'), 'verified')
-  assert.deepEqual(availabilities(await response.text()), ['out of stock', 'in stock', 'out of stock', 'in stock'])
+  assertStock(await response.text(), [0, 3, 0, 7])
 })
-test('reserved stock above on-hand fails closed for the affected variant', () => {
+test('reserved stock above on-hand exports zero for the affected variant', async () => {
   const input = rows(); input[1].reserved = 10
   assert.equal(feed.validateInventory(input).get(input[1].sku), 0)
+  assertStock(await (await handler({ readInventory: async () => input })()).text(), [0, 0, 0, 7])
 })
-test('canonical database integer strings are accepted', () => {
+test('canonical database integer strings retain exact sellable quantities', async () => {
   const input = rows().map(r => ({ ...r, on_hand: String(r.on_hand), reserved: String(r.reserved) }))
   assert.equal(feed.validateInventory(input).get('FF-JERSEY-DRESS-XL'), 7)
+  assertStock(await (await handler({ readInventory: async () => input })()).text(), [0, 3, 0, 7])
 })
-for (const value of [null, undefined, '', ' ', '0x10', '1e3', '2.5', true, -1, 1.5, NaN, Infinity, Number.MAX_SAFE_INTEGER + 1]) {
-  test(`invalid inventory value ${String(value)} suppresses every variant`, async () => {
-    const input = rows(); input[1].on_hand = value
+test('quantities preserve integer precision through the safe-integer boundary', async () => {
+  const input = [
+    { sku: 'FF-JERSEY-DRESS-S', on_hand: Number.MAX_SAFE_INTEGER, reserved: 0 },
+    { sku: 'FF-JERSEY-DRESS-M', on_hand: '9007199254740991', reserved: '9007199254740990' },
+    { sku: 'FF-JERSEY-DRESS-L', on_hand: '9007199254740991', reserved: '2' },
+    { sku: 'FF-JERSEY-DRESS-XL', on_hand: '9007199254740990', reserved: '9007199254740991' },
+  ]
+  assertStock(await (await handler({ readInventory: async () => input })()).text(),
+    [Number.MAX_SAFE_INTEGER, 1, 9007199254740989, 0])
+})
+test('each quantity stays attached to its SKU regardless of database row order', async () => {
+  const input = feed.META_VARIANTS.map((v, i) => ({ sku: v.sku, on_hand: i + 12, reserved: i * 2 })).reverse()
+  const before = structuredClone(input)
+  let reads = 0
+  const xml = await (await handler({ readInventory: async () => { reads++; return input; } })()).text()
+  assertStock(xml, [12, 11, 10, 9])
+  assert.deepEqual([...xml.matchAll(/<g:id>(.*?)<\/g:id>/g)].map(m => m[1]), feed.META_VARIANTS.map(v => v.sku))
+  assert.equal(reads, 1, 'availability and quantity share one inventory snapshot')
+  assert.deepEqual(input, before, 'rendering does not mutate ledger input')
+})
+test('renderer never emits positive or malformed quantities for invalid balances', () => {
+  for (const value of [undefined, null, '3', -1, 0, -0, 1.5, NaN, Infinity, Number.MAX_SAFE_INTEGER + 1]) {
+    const balances = new Map(feed.META_VARIANTS.map(v => [v.sku, value]))
+    assertZeroStock(feed.renderMetaFeed(feed.verifyProduct(product()), balances))
+  }
+  assertZeroStock(feed.renderMetaFeed(feed.verifyProduct(product())))
+})
+for (const field of ['on_hand', 'reserved']) for (const value of [null, undefined, '', ' ', '0x10', '1e3', '2.5', '01', '00', '1.0', '9007199254740992', '9007199254740993', true, -1, 1.5, NaN, Infinity, Number.MAX_SAFE_INTEGER + 1, 1n]) {
+  test(`invalid inventory ${field} value ${String(value)} suppresses every variant and quantity`, async () => {
+    const input = rows(); input[1][field] = value
     const response = await handler({ readInventory: async () => input })()
     assert.equal(response.status, 200)
     assert.equal(response.headers.get('x-ff-inventory-status'), 'unavailable')
-    assert.deepEqual(availabilities(await response.text()), Array(4).fill('out of stock'))
+    assertZeroStock(await response.text())
   })
 }
 for (const [name, alter] of [
@@ -79,20 +121,20 @@ for (const [name, alter] of [
 ]) test(`${name} cannot produce partial in-stock feed`, async () => {
   const response = await handler({ readInventory: async () => alter(rows()) })()
   assert.equal(response.status, 200)
-  assert.deepEqual(availabilities(await response.text()), Array(4).fill('out of stock'))
+  assertZeroStock(await response.text())
 })
 test('database errors emit four out-of-stock rows without leaking errors or secrets', async () => {
   const logs = []
   const response = await handler({ readInventory: async () => { throw Error('postgres://secret'); }, warn: m => logs.push(m) })()
   const xml = await response.text()
   assert.equal(response.status, 200)
-  assert.deepEqual(availabilities(xml), Array(4).fill('out of stock'))
+  assertZeroStock(xml)
   assert.equal(JSON.stringify(logs).includes('secret'), false)
   assert.equal(xml.includes('postgres'), false)
 })
 test('a synchronous inventory exception is safe', async () => {
   const response = await handler({ readInventory: () => { throw Error('failed'); } })()
-  assert.deepEqual(availabilities(await response.text()), Array(4).fill('out of stock'))
+  assertZeroStock(await response.text())
 })
 test('hung reader is bounded and its signal aborted', async () => {
   let signal
@@ -100,19 +142,19 @@ test('hung reader is bounded and its signal aborted', async () => {
   const response = await handler({ timeoutMs: 15, readInventory: options => { signal = options.signal; return new Promise(() => {}); } })()
   assert.ok(Date.now() - start < 1000)
   assert.equal(signal.aborted, true)
-  assert.deepEqual(availabilities(await response.text()), Array(4).fill('out of stock'))
+  assertZeroStock(await response.text())
 })
 test('late resolution cannot alter a timed-out response', async () => {
   let resolve
   const response = await handler({ timeoutMs: 10, readInventory: () => new Promise(r => { resolve = r; }) })()
   resolve(rows())
-  assert.deepEqual(availabilities(await response.text()), Array(4).fill('out of stock'))
+  assertZeroStock(await response.text())
 })
 test('a later healthy fetch recovers without caching the failure', async () => {
   let call = 0
   const get = handler({ readInventory: async () => { if (++call === 1) throw Error('temporary'); return rows(); } })
-  assert.deepEqual(availabilities(await (await get()).text()), Array(4).fill('out of stock'))
-  assert.deepEqual(availabilities(await (await get()).text()), ['out of stock', 'in stock', 'out of stock', 'in stock'])
+  assertZeroStock(await (await get()).text())
+  assertStock(await (await get()).text(), [0, 3, 0, 7])
   assert.equal(call, 2)
 })
 test('success and outage responses are not cached by browsers or Vercel', async () => {
@@ -137,7 +179,16 @@ test('disabled and non-production handlers do not read products or the database'
 test('changing the allowed product to preorder suppresses it even with positive stock', async () => {
   const p = product(); p.fulfillmentStatus = 'pre-order'
   const response = await handler({ getProduct: () => p })()
-  assert.deepEqual(availabilities(await response.text()), Array(4).fill('out of stock'))
+  assertZeroStock(await response.text())
+})
+test('unavailable or unknown fulfillment status exports zero for every positive balance', async () => {
+  for (const fulfillmentStatus of ['out-of-stock', 'pre-order', undefined, 'unknown']) {
+    const p = product(); p.fulfillmentStatus = fulfillmentStatus
+    const input = feed.META_VARIANTS.map(v => ({ sku: v.sku, on_hand: 7, reserved: 2 }))
+    const response = await handler({ getProduct: () => p, readInventory: async () => input })()
+    assert.equal(response.headers.get('x-ff-inventory-status'), 'verified')
+    assertZeroStock(await response.text())
+  }
 })
 test('metadata cannot inject XML and unicode is preserved', async () => {
   const p = product(); p.name = 'Dress & <Tag> "quoted"'; p.description = "Café's dress > áo";
