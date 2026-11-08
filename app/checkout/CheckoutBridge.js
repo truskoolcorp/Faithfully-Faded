@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { applyCheckoutCart, waitForSnipcart } from '@/lib/meta-checkout-cart.mjs'
+import { applyCheckoutCart, waitForSnipcart, checkoutDiagnostic } from '@/lib/meta-checkout-cart.mjs'
 import styles from './checkout.module.css'
 
 export default function CheckoutBridge({ enabled }) {
@@ -57,6 +57,8 @@ export default function CheckoutBridge({ enabled }) {
       setState({ phase: 'ready', message: 'Your selected products are ready. Review quantities, any discounts, shipping, taxes and the final total in your bag before placing your order.', items: payload.items, subtotal, warning: result.couponWarning })
       sdk.api.theme.cart.open()
     } catch (error) {
+      const diagnostic = checkoutDiagnostic(error)
+      if (diagnostic) console.warn('FF checkout verification', JSON.stringify(diagnostic))
       if (controller.current === run && !run.signal.aborted) {
         setState({ phase: 'error', message: error.message || 'Your bag could not be prepared. Please review it before trying again.' })
       } else if (controller.current === run && run.signal.aborted) {
