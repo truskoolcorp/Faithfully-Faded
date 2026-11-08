@@ -27,7 +27,13 @@ RSS feed and must not be used as a product feed.
   from the existing `commerce.inventory` ledger using the existing
   `COMMERCE_DATABASE_URL` server setting. No inventory writes are made.
 - Availability is in stock only when a complete, valid snapshot establishes
-  that on-hand minus reserved is positive. Exact quantities are not exported.
+  that on-hand minus reserved is positive. Each variant exports the exact
+  validated sellable balance, clamped at zero, as
+  `g:quantity_to_sell_on_facebook`. The existing Meta commerce catalog requires
+  this field. Quantities are transmitted publicly to Meta, consistently with
+  the existing public inventory endpoint; on-hand and reserved are not exported.
+  Availability and quantity are derived from the same snapshot and the same
+  eligibility check. No quantity is fabricated, rounded, or manually copied.
 - The other five storefront designs are excluded. Adding a product to the
   storefront cannot silently add it to this feed.
 - The feed uses the existing product photograph and canonical product page,
@@ -42,14 +48,15 @@ RSS feed and must not be used as a product feed.
 
 Inventory failures, missing or duplicate rows, invalid values, unexpected
 SKUs, and a five-second timeout return HTTP 200 with **all four stable IDs
-marked out of stock**. Keeping the rows avoids an empty replacement feed.
+marked out of stock with quantity zero**. Keeping the rows avoids an empty replacement feed.
 The `X-FF-Inventory-Status` header reports `verified` or `unavailable`.
 Provider details and credentials are never included in feed responses or
 diagnostic messages. The database fetch receives an abort signal on timeout.
 
 If product metadata no longer fits the reviewed shape, the endpoint returns
 503 rather than a successful empty catalog. A change from owned in-stock to
-preorder status suppresses all variants even if the ledger still has stock.
+preorder status suppresses all variants and exports zero quantities even if the
+ledger still has stock.
 All responses disable browser and CDN caching.
 
 **This is not an immediate Meta kill switch.** Meta must fetch and accept a
@@ -72,11 +79,15 @@ remain the responsibility of the existing inventory ledger.
 3. Obtain authorization to deploy/enable the endpoint and for the specific
    Meta catalog/source changes. Production deployment and the nonsecret flag
    were authorized on 2026-11-08. Confirm HTTP 200, valid XML, four expected
-   variant IDs, current availability, and `X-FF-Inventory-Status: verified`
+   variant IDs, exact current sellable quantities, consistent availability,
+   and `X-FF-Inventory-Status: verified`
    before supplying the endpoint to Meta.
 4. Validate the actual endpoint in Meta before promoting it. Verify supported
    catalog fields, item approval, destination links and any required business
-   or shop settings. This feed has not been ingested or approved by Meta.
+   or shop settings. Initial Meta validation required
+   `quantity_to_sell_on_facebook`; confirm the updated field is recognized
+   before completing import. Meta ingestion and item approval remain separate
+   from successful feed deployment.
 5. Reconcile the original source before changing it. A new feed does not
    automatically remove 85 products owned by another feed. A legacy partner
    integration may re-add removed products until its sync is addressed.
@@ -95,7 +106,7 @@ remain the responsibility of the existing inventory ledger.
 - `NEXT_TELEMETRY_DISABLED=1 npm run build`: full Next.js production build.
 - Built-server HTTP smoke checks (loopback only, database environment removed):
   disabled production returns 404; enabled production with missing inventory
-  returns valid XML with four out-of-stock variants; enabled preview returns
+  returns valid XML with four out-of-stock variants and zero quantities; enabled preview returns
   404. XML is parsed with Python's ElementTree, not just string matching.
 - Every inventory query in tests is mocked. No live database or Meta request
   is needed or made. Local evidence is not a feed to upload.
