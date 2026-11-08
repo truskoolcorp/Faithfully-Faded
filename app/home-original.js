@@ -423,7 +423,7 @@ export default function Home() {
             <div style={{ display:'flex', gap:12 }}>
               {[
                 { label: 'fb', href: 'https://facebook.com/faithfullyfaded23' },
-                { label: 'ig', href: 'https://instagram.com/faithfullyfaded23' },
+                { label: 'ig', href: 'https://www.instagram.com/faithfade23/' },
                 { label: 'tt', href: 'https://tiktok.com/@faithfullyfaded23' },
                 { label: '𝕏', href: 'https://twitter.com/FadedFaithfully' },
               ].map(s => (

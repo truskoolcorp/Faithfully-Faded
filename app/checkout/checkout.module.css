@@ -1,0 +1,19 @@
+.page { min-height: 100vh; padding: 38px 20px 120px; background: #100b0e; color: #fdf8fc; }
+.brand { display: block; text-align: center; font-family: 'Cormorant Garamond', serif; font-size: 25px; letter-spacing: .1em; color: #ffaded; margin-bottom: 40px; }
+.panel { max-width: 680px; margin: 0 auto; border: 1px solid #624052; padding: clamp(24px, 5vw, 46px); background: #190e15; }
+.eyebrow { text-transform: uppercase; letter-spacing: .16em; color: #ffaded; font-size: 12px; }
+.panel h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(30px, 6vw, 42px); font-weight: 400; margin: 18px 0; }
+.panel p { line-height: 1.7; }
+.warning { border-left: 3px solid #ffaded; padding: 12px 16px; background: #35152a; }
+.items { list-style: none; padding: 0; margin: 28px 0; }
+.items li { display: flex; justify-content: space-between; align-items: start; gap: 18px; border-top: 1px solid #624052; padding: 18px 0; line-height: 1.5; }
+.items small { display: block; color: #d8b7cb; margin-top: 5px; }
+.subtotal { font-size: 14px; }
+.subtotal strong { white-space: nowrap; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 28px; }
+.actions button { cursor: pointer; border: 1px solid #ffaded; padding: 15px 20px; font: inherit; color: #210b19; background: #ffaded; min-height: 48px; }
+.actions .secondary { background: transparent; color: #ffaded; }
+.actions a, .panel footer a { color: #ffaded; text-decoration: underline; text-underline-offset: 4px; }
+.panel footer { display: flex; flex-wrap: wrap; gap: 24px; border-top: 1px solid #624052; padding-top: 28px; margin-top: 36px; font-size: 14px; }
+.page a:focus-visible, .page button:focus-visible { outline: 3px solid white; outline-offset: 5px; }
+@media (max-width: 480px) { .actions { flex-direction: column; align-items: stretch; text-align: center; } .actions button { width: 100%; } .brand { font-size: 21px; } }
