@@ -245,3 +245,23 @@ test('temporary checkout diagnostics have been removed', () => {
     assert.doesNotMatch(fs.readFileSync(require.resolve(path),'utf8'),/checkoutDiagnostic|console\.warn|FF checkout verification/)
   }
 })
+
+
+test('Meta checkout cart names match the catalog title for every size', async () => {
+  const m = await api, c = await cart
+  const feed = await import('../lib/meta-product-feed.mjs')
+  const xml = feed.renderMetaFeed(feed.verifyProduct(actualProduct), feed.validateInventory(rows))
+  for (const size of ['S', 'M', 'L', 'XL']) {
+    const p = await payload(`products=FF-JERSEY-DRESS-${size}:1`)
+    const title = `${actualProduct.name} - Maroon - ${size}`
+    assert.equal(p.items[0].name, title)
+    assert.ok(xml.includes(`<g:title>${feed.escapeXml(title)}</g:title>`))
+    const s = sdk([{...p.items[0], name:actualProduct.name, uniqueId:'saved', unitPrice:55.2}])
+    await c.applyCheckoutCart(s, p)
+    const items = s.store.getState().cart.items.items
+    assert.equal(items.length, 1)
+    assert.equal(items[0].name, title)
+    assert.equal(items[0].quantity, 1)
+    assert.equal(items[0].unitPrice, 55.2)
+  }
+})
