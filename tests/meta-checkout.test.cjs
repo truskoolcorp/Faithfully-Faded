@@ -22,7 +22,7 @@ function sdk(initial = [], { failOnAdd = false, failCoupon = false } = {}) {
     store: { getState: () => ({ cart: { currency: 'usd', items: { items } } }) },
     api: { cart: {
       items: {
-        add: async definition => { calls.push(['add', definition]); if(failOnAdd) throw Error('SDK unavailable'); items.push({ ...definition, basePrice: definition.price, uniqueId: `item-${++n}` }) },
+        add: async definition => { calls.push(['add', definition]); if(failOnAdd) throw Error('SDK unavailable'); items.push({ ...definition, unitPrice: definition.price, uniqueId: `item-${++n}` }) },
         update: async update => { calls.push(['update', update]); items = items.map(item => item.uniqueId === update.uniqueId ? { ...item, ...update } : item) },
         remove: async id => { calls.push(['remove', id]); items = items.filter(item => item.uniqueId !== id) },
       },
@@ -92,7 +92,9 @@ test('fresh bag has exact variants/quantities; second visit does not duplicate',
   assert.equal(items.length,2);assert.deepEqual(items.map(i=>i.quantity),[2,1])
   assert.equal(s.calls.filter(x=>x[0]==='add').length,2)
   assert.equal(s.calls.filter(x=>x[0]==='update').length,2)
-  assert.equal(s.calls.find(x=>x[0]==='update')[1].basePrice,actualProduct.price)
+  assert.equal('basePrice' in s.calls.find(x=>x[0]==='update')[1],false)
+  assert.equal('price' in s.calls.find(x=>x[0]==='update')[1],false)
+  assert.equal('customFields' in s.calls.find(x=>x[0]==='update')[1],false)
   assert.equal(s.calls.find(x=>x[0]==='coupon')[1],'VALID-TEST')
 })
 
@@ -128,7 +130,7 @@ test('ambiguous duplicate variants fail before any mutation', async () => {
 
 test('concurrent clicks cannot interleave cart mutations', async () => {
   const c=await cart,p=await payload(),s=sdk();let release
-  s.api.cart.items.add=definition=>new Promise(resolve=>{release=()=>{s.store.getState().cart.items.items.push({...definition,basePrice:definition.price,uniqueId:'new'});resolve()}})
+  s.api.cart.items.add=definition=>new Promise(resolve=>{release=()=>{s.store.getState().cart.items.items.push({...definition,unitPrice:definition.price,uniqueId:'new'});resolve()}})
   const first=c.applyCheckoutCart(s,{...p,items:[p.items[0]],coupon:null})
   await assert.rejects(c.applyCheckoutCart(s,p),/already/);release();await first
 })
@@ -157,7 +159,7 @@ test('bridge code contains no order confirmation, payment or database writes', a
 
 test('SDK clamp or unexpected cart mutation cannot claim ready', async () => {
   const c=await cart,p=await payload(),s=sdk()
-  s.api.cart.items.add=async definition=>{s.store.getState().cart.items.items.push({...definition,basePrice:definition.price,quantity:1,uniqueId:'clamped'})}
+  s.api.cart.items.add=async definition=>{s.store.getState().cart.items.items.push({...definition,unitPrice:definition.price,quantity:1,uniqueId:'clamped'})}
   await assert.rejects(c.applyCheckoutCart(s,p),/could not be verified/)
   const t=sdk();const original=t.api.cart.items.add
   t.api.cart.items.add=async definition=>{await original(definition);if(t.calls.length===1)t.store.getState().cart.items.items.push({id:'other',uniqueId:'concurrent',quantity:1})}
@@ -167,9 +169,9 @@ test('SDK clamp or unexpected cart mutation cannot claim ready', async () => {
 test('wrong base price or currency is not reported as ready', async () => {
   const c=await cart,p=await payload(),s=sdk()
   await c.applyCheckoutCart(s,p)
-  s.store.getState().cart.items.items[0].basePrice=0.01
+  s.store.getState().cart.items.items[0].price=0.01
   assert.throws(()=>c.verifyCart(s,p),/current price/)
-  s.store.getState().cart.items.items[0].basePrice=p.items[0].price
+  s.store.getState().cart.items.items[0].price=p.items[0].price
   const getState=s.store.getState;s.store.getState=()=>({...getState(),cart:{...getState().cart,currency:'EUR'}})
   assert.throws(()=>c.verifyCart(s,p),/currency/)
 })
@@ -218,33 +220,28 @@ test('verified Instagram footer destination is isolated from other networks', ()
 })
 
 
-test('SDK verification errors expose bounded compatibility reasons only', async () => {
+
+test('observed Snipcart price state verifies without basePrice and preserves discounted unit price', async () => {
   const c=await cart,p=await payload(),s=sdk();await c.applyCheckoutCart(s,p)
   const item=s.store.getState().cart.items.items[0]
-  item.basePrice={usd:69,privateToken:'NEVER_LOG'}
-  item.customer={email:'NEVER_LOG'}
-  assert.throws(()=>c.verifyCart(s,p),error=>{
-    assert.equal(error.checkoutDiagnostic.reason,'price-type')
-    assert.equal(error.checkoutDiagnostic.basePriceType,'object')
-    assert.equal(error.checkoutDiagnostic.usdBasePrice,69)
-    assert.doesNotMatch(JSON.stringify(error.checkoutDiagnostic),/NEVER_LOG|uniqueId|customer/)
-    return true
-  })
-  item.basePrice=p.items[0].price;item.quantity='2'
-  assert.throws(()=>c.verifyCart(s,p),error=>error.checkoutDiagnostic.reason==='quantity')
-  item.quantity=p.items[0].quantity;item.basePrice=Infinity
-  assert.throws(()=>c.verifyCart(s,p),error=>error.checkoutDiagnostic.reason==='price-value')
-  item.basePrice=p.items[0].price;item.customFields=[]
-  assert.throws(()=>c.verifyCart(s,p),error=>error.checkoutDiagnostic.reason==='variant')
+  assert.equal('basePrice' in item,false)
+  item.unitPrice=55.2
+  assert.doesNotThrow(()=>c.verifyCart(s,p))
+  await c.applyCheckoutCart(s,p)
+  assert.equal(s.store.getState().cart.items.items[0].unitPrice,55.2)
 })
 
+test('missing, malformed, stale and fractional-cent prices fail before any mutation', async () => {
+  const c=await cart,p=await payload()
+  for (const price of [undefined,null,'69',{usd:69},NaN,Infinity,0,-69,0.01,69.0001]) {
+    const s=sdk([{...p.items[0],uniqueId:'existing',price}])
+    await assert.rejects(c.applyCheckoutCart(s,p),/current price/)
+    assert.equal(s.calls.length,0)
+  }
+})
 
-test('diagnostic logging boundary sanitizes even an arbitrary external SDK error', async () => {
-  const c=await cart
-  assert.equal(c.checkoutDiagnostic(Error('anything')),null)
-  assert.equal(c.checkoutDiagnostic({checkoutDiagnostic:{reason:'PRIVATE'}}),null)
-  const result=c.checkoutDiagnostic({checkoutDiagnostic:{reason:'price-type',quantityType:'PRIVATE',basePriceType:'object',matchCount:1,basePrice:NaN,usdBasePrice:{secret:'PRIVATE'},token:'PRIVATE'}})
-  assert.equal(result.quantityType,'unknown');assert.equal(result.matchCount,1)
-  assert.equal(result.basePrice,null);assert.equal(result.usdBasePrice,null)
-  assert.doesNotMatch(JSON.stringify(result),/PRIVATE|token|secret/)
+test('temporary checkout diagnostics have been removed', () => {
+  for (const path of ['../lib/meta-checkout-cart.mjs','../app/checkout/CheckoutBridge.js']) {
+    assert.doesNotMatch(fs.readFileSync(require.resolve(path),'utf8'),/checkoutDiagnostic|console\.warn|FF checkout verification/)
+  }
 })

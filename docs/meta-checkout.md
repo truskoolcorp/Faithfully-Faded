@@ -37,7 +37,7 @@ unchanged. No credential is added to this implementation.
 5. Apply an optional coupon through Snipcart's own discount API. Invalid,
    expired or unavailable discounts produce an explicit warning. No discount
    is invented, created or assumed from the incoming URL.
-6. Verify final SDK items, quantities, base prices and currency before opening
+6. Verify final SDK items, quantities, base prices (`price`) and currency before opening
    the normal Snipcart bag. Display the item subtotal as **before discounts,
    shipping and tax**. Snipcart shows the final payable total and owns checkout.
 
@@ -103,8 +103,24 @@ Rollback: disable FF_META_CHECKOUT_ENABLED and redeploy, or restore the last
 known-good Vercel production deployment. Remove/replace the Meta checkout URL
 if it was activated. Do not alter stock, existing product data or keys.
 
+## SDK compatibility verification
+
+A real cart-only observation of deployed Snipcart 3.7.5 confirmed that store
+items have numeric `price` and `unitPrice`, while `basePrice` is absent.
+The base-price check uses finite positive numeric `price` equal to the
+server-canonical price. It never substitutes `unitPrice`, which may reflect
+discounts, variants or included taxes, or coerces strings/currency maps.
+
+Existing matching lines must already have the current base price before any
+mutation. Otherwise the shopper is asked to remove the stale line and retry.
+Quantity, limits and product display metadata are updated without sending an
+unverified price update field or replacing unchanged custom fields. Temporary
+diagnostic code was removed after capturing the supported representation.
+
 ## Sources
 
 - https://developers.facebook.com/documentation/ads-commerce/commerce-platform/setup-checkout-url
 - https://docs.snipcart.com/v3/sdk/api
 - https://docs.snipcart.com/v3/sdk/reference
+
+- https://docs.snipcart.com/v3/email-templates/types/item
