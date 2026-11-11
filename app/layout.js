@@ -1,5 +1,6 @@
 import './globals.css'
 import CartButton from './CartButton'
+import MarketingTracking from './MarketingTracking'
 import Script from 'next/script'
 
 export const metadata = {
@@ -48,6 +49,7 @@ export default function RootLayout({ children }) {
             document.head.appendChild(script);
           })();
         `}</Script>
+        <MarketingTracking enabled={process.env.VERCEL_ENV === 'production'} />
         <CartButton />
         {snipcartKey && <div
           hidden
