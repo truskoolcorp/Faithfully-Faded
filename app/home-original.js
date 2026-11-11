@@ -219,7 +219,7 @@ export default function Home() {
               Faithfully Faded™ <span style={{ width:4, height:4, background:'rgba(255,255,255,0.35)', borderRadius:'50%', display:'inline-block' }} />
               Just Be Blunt <span style={{ width:4, height:4, background:'rgba(255,255,255,0.35)', borderRadius:'50%', display:'inline-block' }} />
               Distinctive Apparel <span style={{ width:4, height:4, background:'rgba(255,255,255,0.35)', borderRadius:'50%', display:'inline-block' }} />
-              Free Shipping Over $75
+              Carrier Rates at Checkout
             </span>
           ))}
         </div>

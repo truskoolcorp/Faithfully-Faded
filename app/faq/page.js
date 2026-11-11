@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 const faqs = [
   { q: 'What is the shipping time?', a: 'See the Shipping policy and your order confirmation for shipment timing. Available destinations, methods and carrier estimates appear at checkout; production time is separate for made-to-order pieces.' },
-  { q: 'Is shipping free?', a: 'The advertised free-shipping offer applies to eligible orders over $75. Check the final shipping charge and promotion conditions before payment; contact us if the displayed charge differs from an applicable offer.' },
+  { q: 'Is shipping free?', a: 'Shipping is charged at the carrier rate shown at checkout. No automatic free-shipping threshold applies. Review the shipping charge before payment.' },
   { q: 'What is your return policy?', a: 'We accept returns within 30 days of delivery. Items must be unworn, unwashed, and in original condition with all tags attached. Exchanges are always free.' },
   { q: 'How do I start a return or exchange?', a: 'Email truskoolcorp@truskool.net with your order number and reason. We will arrange a prepaid label and return or exchange instructions under the Returns policy. Do not send items back before receiving the correct address.' },
   { q: 'Do your clothes run true to size?', a: 'Most pieces run true to size with a relaxed fit. The Hooded Baseball Jersey Dress is designed oversized — size down one for a closer fit. Check our Size Guide for detailed measurements.' },

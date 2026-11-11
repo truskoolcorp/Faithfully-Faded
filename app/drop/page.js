@@ -37,7 +37,7 @@ export default function Drop() {
             <span style={{ fontFamily: 'Bebas Neue,sans-serif', fontSize: 26, letterSpacing: '0.1em', color: '#FFADED' }}>FADED15</span>
             <span style={{ fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#9a7a8e' }}>15% off</span>
           </div>
-          <p style={{ fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#5c4a54', marginTop: 14 }}>Free shipping over $75 · Limited launch window</p>
+          <p style={{ fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#5c4a54', marginTop: 14 }}>Carrier rates calculated at checkout · Limited launch window</p>
         </div>
       </section>
 
