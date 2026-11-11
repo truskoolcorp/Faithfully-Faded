@@ -6,8 +6,8 @@ import { useSearchParams } from 'next/navigation'
 import { applyCheckoutCart, waitForSnipcart } from '@/lib/meta-checkout-cart.mjs'
 import styles from './checkout.module.css'
 
-export default function CheckoutBridge({ enabled }) {
-  const [state, setState] = useState({ phase: enabled ? 'loading' : 'error', message: enabled ? 'Checking current price and availability…' : 'Shop checkout is not available here. Please return to the shop.' })
+export default function CheckoutBridge({ enabled, initialItems = [] }) {
+  const [state, setState] = useState({ items: enabled ? initialItems : [], phase: enabled ? 'loading' : 'error', message: enabled ? 'Checking current price and availability…' : 'Shop checkout is not available here. Please return to the shop.' })
   const checkoutQuery = useSearchParams().toString()
   const controller = useRef(null)
   const task = useRef(null)
