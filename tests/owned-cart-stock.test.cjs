@@ -11,4 +11,4 @@ test('JSON validation excludes sold-out cart options and marks variant stock non
  assert.equal(r.status,200);assert.equal(r.data.dimensions.weight,900);assert.equal(r.data.price,69);assert.equal(r.data.customFields[1].options,'M|L|XL');assert.equal(r.data.customFields[1].required,true);assert.equal(r.data.variants[0].stock,0);assert.equal(r.data.variants[0].allowOutOfStockPurchases,false);assert.equal(r.headers['Cache-Control'],'no-store');
 });
 test('inventory failure cannot validate a checkout',async()=>{const r=await (await harness(true))({}, {params:Promise.resolve({id:'hooded-baseball-jersey-dress'})});assert.equal(r.status,503)});
-test('unknown product cannot use owned validation endpoint',async()=>{const r=await harness()({}, {params:Promise.resolve({id:'other'})});assert.equal(r.status,404)});
+test('unknown product cannot use owned validation endpoint',async()=>{const r=await (await harness())({}, {params:Promise.resolve({id:'other'})});assert.equal(r.status,404)});
