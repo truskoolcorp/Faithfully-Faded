@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { shippingWeightGrams } from '@/lib/shipping-weight.mjs'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { getProduct, getRelatedProducts } from '@/lib/products'
@@ -109,6 +110,7 @@ export default function ProductPage() {
             className="snipcart-add-item"
             disabled={!selectedSize || !ownedReady || !sizeAvailable(selectedSize)}
             data-item-id={product.id}
+            data-item-weight={isOwned ? shippingWeightGrams(product.id) : undefined}
             data-item-name={product.name}
             data-item-price={product.price}
             data-item-url={isOwned ? `https://www.faithfully-faded.com/api/catalog/${product.id}` : `/shop/${product.id}`}

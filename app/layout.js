@@ -1,3 +1,4 @@
+import ShippingWeightRefresh from './ShippingWeightRefresh'
 import './globals.css'
 import CartButton from './CartButton'
 import MarketingTracking from './MarketingTracking'
@@ -34,6 +35,7 @@ export default function RootLayout({ children }) {
         <link rel="stylesheet" href="https://cdn.snipcart.com/themes/v3.7.5/default/snipcart.css" />
       </head>
       <body>
+        <ShippingWeightRefresh />
         {children}
         <Script id="metricool-faithfully-faded" strategy="afterInteractive">{`
           (function () {
