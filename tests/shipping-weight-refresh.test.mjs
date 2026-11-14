@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { refreshShippingWeights } from '../lib/shipping-weight-refresh.mjs'
+import { refreshShippingWeights, observeBagOpening } from '../lib/shipping-weight-refresh.mjs'
 test('old bags refresh dimensions only and leave POD lines intact',async()=>{
  const items=[{id:'hooded-baseball-jersey-dress',uniqueId:'dress',quantity:2,price:69,dimensions:{weight:0,length:20}},{id:'hoe-tee-owned-v1',uniqueId:'tee',dimensions:{weight:0}},{id:'printful-123',uniqueId:'pod',dimensions:{weight:0}}]
  const patches=[]; const sdk={store:{getState:()=>({cart:{items:{items}}})},api:{cart:{items:{update:async p=>{patches.push(p);Object.assign(items.find(i=>i.uniqueId===p.uniqueId),p)}}}}}
@@ -12,4 +12,12 @@ test('old bags refresh dimensions only and leave POD lines intact',async()=>{
 test('SDK errors are surfaced',async()=>{
  const sdk={store:{getState:()=>({cart:{items:{items:[{id:'hoe-tee-owned-v1',uniqueId:'old'}]}}})},api:{cart:{items:{update:async()=>{throw Error('offline')}}}}}
  await assert.rejects(refreshShippingWeights(sdk),/offline/)
+})
+
+test('documented theme event refreshes only when bag opens and supports cleanup',()=>{
+ let handler, calls=0, stopped=false
+ const sdk={events:{on:(name,fn)=>{assert.equal(name,'theme.routechanged');handler=fn;return()=>{stopped=true}}}}
+ const stop=observeBagOpening(sdk,()=>{calls++})
+ handler({from:'/',to:'/cart'});handler({from:'/cart',to:'/checkout'});handler({from:'/cart',to:'/'})
+ assert.equal(calls,1);stop();assert.equal(stopped,true)
 })
